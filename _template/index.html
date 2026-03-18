@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLIENT_NAME — Open Book Project Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ─── DESIGN TOKENS ──────────────────────────────────────── */
+  :root {
+    --navy:          #1C2E44;
+    --cream:         #FAFAF8;
+    --border:        #D8D4CE;
+    --text:          #1A1A18;
+    --muted:         #7A7670;
+    --done-bg:       #F2F4F0;
+    --done-text:     #4A6040;
+    --done-border:   #C8D4C0;
+    --approval-bg:   #FDF7EE;
+    --approval-text: #6A500A;
+    --edit-ring:     #3A7BD5;
+    --edit-bg:       #EEF3FF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--cream); }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    font-size: 13.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── TEAM BANNER ────────────────────────────────────────── */
+  .team-banner {
+    display: none;
+    background: var(--navy);
+    color: rgba(255,255,255,0.75);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px 60px;
+    letter-spacing: .03em;
+  }
+  .team-banner em { color: #7FB3FF; font-style: normal; }
+  body.team-mode .team-banner { display: block; }
+
+  /* ─── PAGE ───────────────────────────────────────────────── */
+  .page { max-width: 780px; margin: 0 auto; padding: 56px 40px 80px; }
+
+  /* ─── HEADER ─────────────────────────────────────────────── */
+  .doc-header {
+    margin-bottom: 40px;
+    padding-bottom: 28px;
+    border-bottom: 2px solid var(--navy);
+  }
+  .doc-eyebrow {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .doc-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 30px; font-weight: 700;
+    color: var(--navy); line-height: 1.2; margin-bottom: 6px;
+  }
+  .doc-subtitle { font-size: 13px; color: var(--muted); font-weight: 300; }
+
+  /* ─── SECTION HEADING ────────────────────────────────────── */
+  .section-heading {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--navy); margin: 36px 0 14px;
+  }
+
+  /* ─── TABLES ─────────────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 13px; }
+  thead tr { background: var(--navy); }
+  thead th {
+    font-size: 10.5px; font-weight: 600;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+    padding: 9px 13px; text-align: left; white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody td { padding: 10px 13px; vertical-align: top; line-height: 1.45; }
+
+  /* Overview alternating rows */
+  .tbl-overview tbody tr:nth-child(odd) { background: rgba(0,0,0,0.018); }
+  .col-ws { font-weight: 600; }
+  .col-window { color: var(--muted); }
+
+  /* Status pills */
+  .pill {
+    display: inline-block; font-size: 10.5px; font-weight: 600;
+    letter-spacing: .04em; padding: 2px 8px; border-radius: 3px; white-space: nowrap;
+  }
+  .pill-complete  { background: var(--done-bg);  color: var(--done-text);  border: 1px solid var(--done-border); }
+  .pill-active    { background: #EEF3FF; color: #2A4EA0; border: 1px solid #C0CFFF; }
+  .pill-upcoming  { background: #F5F4F0; color: #666;    border: 1px solid #DDD; }
+
+  /* Milestone row types */
+  .row-done td      { background: var(--done-bg); color: #666; }
+  .row-done .ms-name { color: #555; }
+  .row-done .done-check { color: var(--done-text); font-weight: 600; font-size: 11px; }
+  .row-approval td  { background: var(--approval-bg); }
+  .row-approval .ms-date     { color: var(--approval-text); font-weight: 700; }
+  .row-approval .ms-approval { color: var(--approval-text); font-weight: 700; }
+
+  .ms-name     { font-weight: 500; }
+  .ms-date     { font-variant-numeric: tabular-nums; white-space: nowrap; font-size: 12.5px; }
+  .ms-ws       { color: var(--muted); font-size: 12px; }
+  .ms-approval { font-size: 12px; white-space: nowrap; }
+  .ms-dash     { color: #CCC; }
+
+  /* ─── TEAM-MODE EDITING ──────────────────────────────────── */
+  .editable {
+    cursor: pointer; border-bottom: 1.5px dashed var(--edit-ring);
+    color: #2A5BBF; border-radius: 2px; display: inline-block;
+  }
+  .editable:hover { background: var(--edit-bg); }
+  .edit-wrap { display: inline-flex; align-items: center; gap: 5px; }
+  .edit-wrap input {
+    border: 1.5px solid var(--edit-ring); border-radius: 3px;
+    font-family: 'DM Sans', sans-serif; font-size: 12.5px;
+    padding: 2px 6px; color: var(--text); width: 120px;
+    outline: none; background: #fff;
+  }
+  .edit-wrap input:focus { box-shadow: 0 0 0 2px rgba(58,123,213,.25); }
+  .btn-save {
+    background: var(--navy); color: #fff; border: none;
+    border-radius: 3px; padding: 3px 9px;
+    font-size: 11px; font-family: 'DM Sans', sans-serif;
+    font-weight: 600; cursor: pointer;
+  }
+  .btn-cancel {
+    background: none; color: var(--muted); border: 1px solid var(--border);
+    border-radius: 3px; padding: 3px 7px;
+    font-size: 11px; font-family: 'DM Sans', sans-serif; cursor: pointer;
+  }
+
+  /* ─── ADD MILESTONE BUTTON ───────────────────────────────── */
+  .add-btn {
+    display: none; margin-top: 6px;
+    background: none; border: 1px dashed var(--border);
+    color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: 12px; padding: 6px 14px; border-radius: 4px;
+    cursor: pointer; width: 100%; text-align: left;
+  }
+  .add-btn:hover { background: #F0EEE8; color: var(--text); }
+  body.team-mode .add-btn { display: block; }
+
+  /* ─── ADD MILESTONE FORM ─────────────────────────────────── */
+  .add-form { display: none; }
+  .add-form.open { display: table-row; }
+  .add-form td { background: var(--edit-bg); padding: 8px 13px; }
+  .add-form input, .add-form select {
+    border: 1px solid #B0CEFF; border-radius: 3px;
+    font-family: 'DM Sans', sans-serif; font-size: 12px;
+    padding: 4px 7px; outline: none; background: #fff;
+  }
+
+  /* ─── FOOTER ─────────────────────────────────────────────── */
+  .doc-footer {
+    margin-top: 56px; padding-top: 18px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-brand { font-family: 'Libre Baskerville', serif; font-size: 13px; color: var(--muted); }
+  .footer-note  { font-size: 11px; color: var(--muted); text-align: right; }
+
+  /* ─── TOAST ──────────────────────────────────────────────── */
+  .toast {
+    position: fixed; bottom: 20px; right: 20px;
+    background: var(--navy); color: #fff;
+    font-size: 12.5px; font-weight: 500;
+    padding: 9px 16px; border-radius: 5px;
+    opacity: 0; transform: translateY(6px);
+    transition: all .2s; pointer-events: none; z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.err  { background: #8B2020; }
+
+  @media print {
+    .team-banner, .add-btn, .add-form, .editable { display: none !important; }
+    .page { padding: 20px; }
+  }
+  @media (max-width: 600px) {
+    .page { padding: 24px 20px 60px; }
+    .col-window, .ms-ws { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="team-banner">
+  ✏ Team mode &nbsp;·&nbsp; <em>Click any date to edit</em> &nbsp;·&nbsp; Changes sync to Monday.com &nbsp;·&nbsp; <em>+ Add milestone</em> button appears below the table
+</div>
+
+<div class="page">
+
+  <!-- ═══════════════════════════════════════════════════════
+       HEADER
+       Update: CLIENT_NAME, updated date
+  ════════════════════════════════════════════════════════ -->
+  <header class="doc-header">
+    <div class="doc-eyebrow">Open Book — Project Plan</div>
+    <div class="doc-title">CLIENT_NAME</div>
+    <div class="doc-subtitle">Updated MONTH DD, YYYY</div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PROJECT OVERVIEW TABLE
+       Add/remove rows as needed for this client's workstreams.
+       Status classes: pill-complete | pill-active | pill-upcoming
+  ════════════════════════════════════════════════════════ -->
+  <div class="section-heading">Project Overview</div>
+  <table class="tbl-overview">
+    <thead><tr>
+      <th style="width:52%">Workstream</th>
+      <th style="width:20%">Status</th>
+      <th style="width:28%" class="col-window">Target Window</th>
+    </tr></thead>
+    <tbody>
+      <!-- EXAMPLE ROWS — replace with this client's workstreams -->
+      <tr><td class="col-ws">Know You Deeply</td>     <td><span class="pill pill-upcoming">Upcoming</span></td><td class="col-window">Month – Month</td></tr>
+      <tr><td class="col-ws">Show Ways Forward</td>   <td><span class="pill pill-upcoming">Upcoming</span></td><td class="col-window">Month – Month</td></tr>
+      <tr><td class="col-ws">WORKSTREAM_3</td>        <td><span class="pill pill-upcoming">Upcoming</span></td><td class="col-window">Month – Month</td></tr>
+      <tr><td class="col-ws">Project Close-Out</td>   <td><span class="pill pill-upcoming">Upcoming</span></td><td class="col-window">Month – Month</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ═══════════════════════════════════════════════════════
+       KEY MILESTONES TABLE
+       Row types:
+         row-done     = completed milestone (gray background)
+         row-approval = key approval/meeting (amber background)
+         (no class)   = standard upcoming milestone
+
+       data-id = Monday.com subitem ID (enables date sync)
+                 Use "null" if no Monday ID available yet
+  ════════════════════════════════════════════════════════ -->
+  <div class="section-heading">Key Milestones + Sign-Off Dates</div>
+
+  <table class="tbl-milestones" id="ms-table">
+    <thead><tr>
+      <th style="width:110px">Target Date</th>
+      <th>Milestone</th>
+      <th style="width:160px" class="ms-ws">Workstream</th>
+      <th style="width:75px">Status</th>
+      <th style="width:120px">Approval Needed By</th>
+    </tr></thead>
+    <tbody id="ms-body">
+
+      <!-- ── COMPLETED MILESTONES ──────────────────────── -->
+      <!-- Copy this pattern for each completed milestone   -->
+      <tr class="row-done">
+        <td class="ms-date">Mon DD</td>
+        <td class="ms-name">MILESTONE_NAME</td>
+        <td class="ms-ws">WORKSTREAM</td>
+        <td><span class="done-check">✓ Done</span></td>
+        <td class="ms-dash">–</td>
+      </tr>
+
+      <!-- ── APPROVAL / KEY MEETING MILESTONES ────────── -->
+      <!-- Use row-approval class + data-id for Monday sync -->
+      <tr class="row-approval" data-id="MONDAY_SUBITEM_ID">
+        <td class="ms-date"><span class="date-display">Mon DD</span></td>
+        <td class="ms-name">MILESTONE_NAME</td>
+        <td class="ms-ws">WORKSTREAM</td>
+        <td style="font-size:11px;font-weight:600;color:var(--approval-text)">Approval</td>
+        <td class="ms-approval">Mon DD</td>
+      </tr>
+
+      <!-- ── STANDARD UPCOMING MILESTONES ─────────────── -->
+      <tr data-id="MONDAY_SUBITEM_ID">
+        <td class="ms-date"><span class="date-display">Mon DD</span></td>
+        <td class="ms-name">MILESTONE_NAME</td>
+        <td class="ms-ws">WORKSTREAM</td>
+        <td style="font-size:11px;color:var(--muted)">Upcoming</td>
+        <td class="ms-dash">–</td>
+      </tr>
+
+      <!-- ── ADD ROW FORM (leave at bottom, team mode only) -->
+      <tr class="add-form" id="add-form">
+        <td><input type="text" id="f-date" placeholder="e.g. Apr 14" style="width:100px"></td>
+        <td><input type="text" id="f-name" placeholder="Milestone name" style="width:98%"></td>
+        <td><input type="text" id="f-ws"   placeholder="Workstream"    style="width:98%"></td>
+        <td>
+          <select id="f-type">
+            <option value="upcoming">Upcoming</option>
+            <option value="approval">Approval</option>
+          </select>
+        </td>
+        <td>
+          <span style="display:flex;gap:4px">
+            <button class="btn-save"   onclick="addRow()">Add</button>
+            <button class="btn-cancel" onclick="closeForm()">✕</button>
+          </span>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <button class="add-btn" onclick="openForm()">+ Add milestone</button>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PROJECT CLOSE TABLE
+       Update dates and client name.
+  ════════════════════════════════════════════════════════ -->
+  <div class="section-heading">Project Close-Out</div>
+  <table>
+    <thead><tr>
+      <th style="width:140px">Target Date</th>
+      <th>Milestone</th>
+      <th style="width:200px">CLIENT_NAME Approval By</th>
+    </tr></thead>
+    <tbody>
+      <tr><td class="ms-date">Mon DD, YYYY</td><td class="ms-name">Project Close — All Deliverables Complete</td><td class="ms-dash">–</td></tr>
+      <tr><td class="ms-date">Mon DD, YYYY</td><td class="ms-name">90-Day Check-In Period Start</td><td class="ms-dash">–</td></tr>
+      <tr><td class="ms-date">Mon DD, YYYY</td><td class="ms-name">90-Day Check-In Period End</td><td class="ms-dash">–</td></tr>
+    </tbody>
+  </table>
+
+  <footer class="doc-footer">
+    <div class="footer-brand">Open Book</div>
+    <div class="footer-note">
+      teamopenbook.com · Minneapolis, MN<br>
+      <span id="footer-note">For questions, contact your Open Book project lead.</span>
+    </div>
+  </footer>
+
+</div><!-- /.page -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONFIG — update these for each client
+// ═══════════════════════════════════════════════════════════
+const TEAM_KEY  = 'ob-team-2026';           // shared team password
+const MON_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjYyNDM1NzMyNSwiYWFpIjoxMSwidWlkIjo2MDQyODY3MCwiaWFkIjoiMjAyNi0wMi0yM1QwMTo0MjowMi4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6MjMyNTUzNTYsInJnbiI6InVzZTEifQ.hkh7r8Sn3i6xTak1iw2eYJqS3kf4xtXH3sOUDryHaXc';    // paste Monday API key at deploy
+const BOARD_ID  = 18397531209;              // Monday Active Projects board ID
+const MON_COL   = 'timerange_mm00qh4t';    // timeline column ID
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+const params = new URLSearchParams(location.search);
+const isTeam = params.get('key') === TEAM_KEY;
+
+if (isTeam) {
+  document.body.classList.add('team-mode');
+  document.getElementById('footer-note').textContent =
+    'Team mode — date edits sync to Monday.com';
+  activateDates();
+}
+
+// ═══════════════════════════════════════════════════════════
+// MAKE DATES EDITABLE
+// ═══════════════════════════════════════════════════════════
+function activateDates() {
+  document.querySelectorAll('tr[data-id] .date-display').forEach(el => {
+    el.classList.add('editable');
+    el.title = 'Click to edit';
+    el.addEventListener('click', () => startEdit(el));
+  });
+}
+
+function startEdit(el) {
+  if (el.closest('tr').querySelector('.edit-wrap')) return;
+  const original = el.textContent;
+  const wrap = document.createElement('span');
+  wrap.className = 'edit-wrap';
+  wrap.innerHTML = `
+    <input type="text" value="${original}">
+    <button class="btn-save">Save</button>
+    <button class="btn-cancel">✕</button>
+  `;
+  el.replaceWith(wrap);
+  const inp = wrap.querySelector('input');
+  inp.focus(); inp.select();
+  wrap.querySelector('.btn-save').onclick   = () => commitEdit(wrap, original);
+  wrap.querySelector('.btn-cancel').onclick = () => cancelEdit(wrap, original);
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter')  commitEdit(wrap, original);
+    if (e.key === 'Escape') cancelEdit(wrap, original);
+  });
+}
+
+function cancelEdit(wrap, original) {
+  const span = makeEditable(original);
+  wrap.replaceWith(span);
+}
+
+async function commitEdit(wrap, original) {
+  const inp    = wrap.querySelector('input');
+  const newVal = inp.value.trim();
+  if (!newVal || newVal === original) { cancelEdit(wrap, original); return; }
+
+  const row      = wrap.closest('tr');
+  const subitemId = row.dataset.id;
+
+  if (subitemId && subitemId !== 'null' &&
+      MON_TOKEN !== 'YOUR_MONDAY_API_KEY') {
+    try   { await syncMonday(subitemId, newVal); toast('Updated in Monday ✓'); }
+    catch { toast('Saved locally — Monday sync failed', true); }
+  } else {
+    toast('Date updated ✓');
+  }
+
+  wrap.replaceWith(makeEditable(newVal));
+}
+
+function makeEditable(text) {
+  const span = document.createElement('span');
+  span.className = 'date-display editable';
+  span.title     = 'Click to edit';
+  span.textContent = text;
+  span.addEventListener('click', () => startEdit(span));
+  return span;
+}
+
+// ═══════════════════════════════════════════════════════════
+// MONDAY SYNC
+// ═══════════════════════════════════════════════════════════
+async function syncMonday(subitemId, dateStr) {
+  const mon = {
+    Jan:'01', Feb:'02', Mar:'03', Apr:'04', May:'05', Jun:'06',
+    Jul:'07', Aug:'08', Sep:'09', Oct:'10', Nov:'11', Dec:'12'
+  };
+  const m = dateStr.match(/([A-Za-z]{3})\w*\s+(\d+)/);
+  if (!m) throw new Error('unparseable date');
+  const iso = `2026-${mon[m[1]]}-${m[2].padStart(2,'0')}`;
+  const val = JSON.stringify({ from: iso, to: iso });
+  const q   = `mutation{change_column_value(board_id:${BOARD_ID},item_id:${subitemId},column_id:"${MON_COL}",value:${JSON.stringify(val)}){id}}`;
+  const r   = await fetch('https://api.monday.com/v2', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': MON_TOKEN,
+      'API-Version': '2024-01'
+    },
+    body: JSON.stringify({ query: q })
+  });
+  const d = await r.json();
+  if (d.errors) throw new Error(d.errors[0].message);
+}
+
+// ═══════════════════════════════════════════════════════════
+// ADD MILESTONE
+// ═══════════════════════════════════════════════════════════
+function openForm()  { document.getElementById('add-form').classList.add('open'); document.getElementById('f-name').focus(); }
+function closeForm() {
+  document.getElementById('add-form').classList.remove('open');
+  ['f-date','f-name','f-ws'].forEach(id => document.getElementById(id).value = '');
+}
+
+function addRow() {
+  const date = document.getElementById('f-date').value.trim();
+  const name = document.getElementById('f-name').value.trim();
+  const ws   = document.getElementById('f-ws').value.trim();
+  const type = document.getElementById('f-type').value;
+  if (!date || !name) { toast('Date and milestone name required', true); return; }
+
+  const isApproval = type === 'approval';
+  const tr = document.createElement('tr');
+  if (isApproval) tr.classList.add('row-approval');
+  tr.dataset.id = 'null';
+  tr.innerHTML = `
+    <td class="ms-date">${makeEditable(date).outerHTML}</td>
+    <td class="ms-name">${name}</td>
+    <td class="ms-ws">${ws}</td>
+    <td style="font-size:11px;${isApproval ? 'font-weight:600;color:var(--approval-text)' : 'color:var(--muted)'}">
+      ${isApproval ? 'Approval' : 'Upcoming'}
+    </td>
+    <td class="ms-dash">–</td>
+  `;
+  const form = document.getElementById('add-form');
+  form.parentNode.insertBefore(tr, form);
+  tr.querySelector('.date-display').addEventListener('click', function() { startEdit(this); });
+  closeForm();
+  toast('Milestone added ✓');
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════
+function toast(msg, isErr) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'toast show' + (isErr ? ' err' : '');
+  setTimeout(() => t.className = 'toast', 2600);
+}
+</script>
+</body>
+</html>
