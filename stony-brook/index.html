@@ -153,6 +153,27 @@
   .ms-approval { font-size: 12px; white-space: nowrap; }
   .ms-dash { color: #CCC; }
 
+  /* MARK AS DONE BUTTON — team mode only */
+  .done-btn {
+    display: none;
+    cursor: pointer;
+    background: none;
+    border: 1px solid var(--done-border);
+    color: var(--done-text);
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity .15s;
+  }
+  body.team-mode tr[data-id]:not(.row-done):hover .done-btn { opacity: 1; display: inline-block; }
+  body.team-mode tr[data-id]:not(.row-done) .done-btn { display: inline-block; }
+
   /* EDITABLE DATE — team mode only */
   .editable {
     cursor: pointer;
@@ -260,8 +281,23 @@
   .toast.show { opacity: 1; transform: translateY(0); }
   .toast.err { background: #8B2020; }
 
+  /* DRAG SORT — team mode */
+  .drag-handle {
+    display: none;
+    cursor: grab;
+    color: #CCC;
+    font-size: 14px;
+    padding: 0 6px 0 0;
+    user-select: none;
+    line-height: 1;
+  }
+  .drag-handle:hover { color: #999; }
+  body.team-mode tr[data-id] .drag-handle { display: inline; }
+  tr.dragging { opacity: .4; }
+  tr.drag-over td { border-top: 2px solid var(--edit-ring) !important; }
+
   @media print {
-    .team-banner, .add-row-btn, .add-row-form, .editable { display: none !important; }
+    .team-banner, .add-row-btn, .add-row-form, .editable, .drag-handle { display: none !important; }
     .page { padding: 20px; }
   }
   @media (max-width: 600px) {
@@ -273,7 +309,7 @@
 <body>
 
 <div class="team-banner">
-  ✏ Team mode — <span>click any date to edit</span> · Changes sync to Monday.com · <span>Add milestone</span> button appears below each section
+  ✏ Team mode — <span>click any date to edit</span> · <span>hover a row to mark done</span> · <span>drag</span> ⠿ to reorder · <span>+ Add milestone</span> below
 </div>
 
 <div class="page">
@@ -414,18 +450,139 @@ if (isTeam) {
   document.body.classList.add('team-mode');
   document.getElementById('footer-mode-note').textContent = 'Team mode — date edits sync to Monday.com';
   activateEditable();
+  activateDragSort();
 }
 
-// ─── MAKE DATES EDITABLE (team mode) ─────────────
+// ─── DRAG TO REORDER ─────────────────────────────
+function activateDragSort() {
+  const tbody = document.getElementById('ms-body');
+  let dragged = null;
+
+  // Add drag handle to every editable milestone row
+  tbody.querySelectorAll('tr[data-id]').forEach(row => {
+    if (row.id === 'add-row-form') return;
+    const firstTd = row.querySelector('td');
+    if (!firstTd) return;
+    const handle = document.createElement('span');
+    handle.className = 'drag-handle';
+    handle.textContent = '⠿';
+    handle.title = 'Drag to reorder';
+    firstTd.prepend(handle);
+
+    row.setAttribute('draggable', 'true');
+
+    row.addEventListener('dragstart', e => {
+      dragged = row;
+      setTimeout(() => row.classList.add('dragging'), 0);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+      tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+      dragged = null;
+    });
+
+    row.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (row !== dragged) {
+        tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+        row.classList.add('drag-over');
+      }
+    });
+
+    row.addEventListener('drop', e => {
+      e.preventDefault();
+      if (dragged && dragged !== row) {
+        const rows = Array.from(tbody.querySelectorAll('tr[data-id]:not(#add-row-form)'));
+        const dragIdx = rows.indexOf(dragged);
+        const dropIdx = rows.indexOf(row);
+        const addForm = document.getElementById('add-row-form');
+        if (dragIdx < dropIdx) {
+          row.after(dragged);
+        } else {
+          row.before(dragged);
+        }
+        // Re-attach drag handle events for the moved row
+        row.classList.remove('drag-over');
+        toast('Row moved ✓');
+      }
+    });
+  });
+
+  // Allow drop on tbody itself (when dragging below all rows)
+  tbody.addEventListener('dragover', e => e.preventDefault());
+}
+
+// ─── MAKE DATES EDITABLE + MARK AS DONE (team mode) ─────────────
 function activateEditable() {
-  document.querySelectorAll('tr[data-id] .date-display').forEach(el => {
-    el.classList.add('editable');
-    el.title = 'Click to edit date';
-    el.addEventListener('click', () => startEdit(el));
+  document.querySelectorAll('tr[data-id]').forEach(row => {
+    if (row.id === 'add-row-form') return;
+    if (row.classList.contains('row-done')) return;
+
+    // Make date editable
+    const dateEl = row.querySelector('.date-display');
+    if (dateEl) {
+      dateEl.classList.add('editable');
+      dateEl.title = 'Click to edit date';
+      dateEl.addEventListener('click', () => startEdit(dateEl));
+    }
+
+    // Add Mark as Done button to name cell
+    if (!row.querySelector('.done-btn')) {
+      const nameCell = row.cells[1];
+      if (nameCell) {
+        const btn = document.createElement('button');
+        btn.className = 'done-btn';
+        btn.textContent = '✓ Mark done';
+        btn.title = 'Mark this milestone as complete';
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          markAsDone(row);
+        });
+        nameCell.appendChild(btn);
+      }
+    }
   });
 }
 
-function startEdit(el) {
+function markAsDone(row) {
+  // Convert row styling to done
+  row.classList.remove('row-approval');
+  row.classList.add('row-done');
+  row.removeAttribute('draggable');
+
+  // Get the current date text
+  const dateEl = row.querySelector('.date-display, .editable');
+  const dateText = dateEl ? dateEl.textContent : '–';
+
+  // Replace date cell — remove editable, just show date in done style
+  const dateCell = row.cells[0];
+  dateCell.innerHTML = `<span class="ms-date">${dateText}</span>`;
+
+  // Replace status cell (index 3)
+  const statusCell = row.cells[3];
+  if (statusCell) statusCell.innerHTML = `<span class="done-check">✓ Done</span>`;
+
+  // Replace approval cell (index 4) with dash
+  const approvalCell = row.cells[4];
+  if (approvalCell) { approvalCell.innerHTML = '–'; approvalCell.className = 'ms-dash'; }
+
+  // Remove done button and drag handle from name cell
+  const nameCell = row.cells[1];
+  if (nameCell) {
+    nameCell.querySelector('.done-btn')?.remove();
+    nameCell.querySelector('.drag-handle')?.remove();
+  }
+
+  // Remove drag handle from date cell
+  dateCell.querySelector('.drag-handle')?.remove();
+
+  toast('Milestone marked as done ✓');
+}
+
+
   if (el.closest('tr').querySelector('.edit-wrap')) return; // already editing
   const original = el.textContent;
   const wrap = document.createElement('span');
@@ -537,6 +694,17 @@ function addRow() {
   form.parentNode.insertBefore(tr, form);
   // Make the new date editable
   tr.querySelector('.date-display').addEventListener('click', function(){ startEdit(this); });
+  // Add drag handle and make draggable
+  if (isTeam) {
+    const firstTd = tr.querySelector('td');
+    const handle = document.createElement('span');
+    handle.className = 'drag-handle';
+    handle.textContent = '⠿';
+    handle.title = 'Drag to reorder';
+    firstTd.prepend(handle);
+    tr.setAttribute('draggable', 'true');
+    activateDragSort();
+  }
   closeAddForm();
   toast('Milestone added ✓');
 }
