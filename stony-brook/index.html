@@ -443,12 +443,11 @@
 <script>
 // ─── CONFIG ─────────────────────────────────────
 const TEAM_KEY   = 'ob-team-2026';
-const MON_TOKEN  = 'eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjYyNDM1NzMyNSwiYWFpIjoxMSwidWlkIjo2MDQyODY3MCwiaWFkIjoiMjAyNi0wMi0yM1QwMTo0MjowMi4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6MjMyNTUzNTYsInJnbiI6InVzZTEifQ.hkh7r8Sn3i6xTak1iw2eYJqS3kf4xtXH3sOUDryHaXc'; // paste your Monday API key here on deploy
+const MON_TOKEN  = 'eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjYyNDM1NzMyNSwiYWFpIjoxMSwidWlkIjo2MDQyODY3MCwiaWFkIjoiMjAyNi0wMi0yM1QwMTo0MjowMi4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6MjMyNTUzNTYsInJnbiI6InVzZTEifQ.hkh7r8Sn3i6xTak1iw2eYJqS3kf4xtXH3sOUDryHaXc';
 const BOARD_ID   = 18397531209;
 const MON_COL    = 'timerange_mm00qh4t';  // timeline column id
 
 // ─── INIT ────────────────────────────────────────
-// Supports URL key, sessionStorage persistence, and password prompt fallback
 function isTeamMode() {
   return location.href.indexOf('key=' + TEAM_KEY) !== -1
       || sessionStorage.getItem('ob_team') === TEAM_KEY;
@@ -477,13 +476,17 @@ function unlockTeamMode() {
 if (isTeamMode()) { enableTeamMode(); }
 
 // ─── DRAG TO REORDER ─────────────────────────────
+// FIX: was referencing 'ms-body' — correct ID is 'milestone-body'
 function activateDragSort() {
-  const tbody = document.getElementById('ms-body');
+  const tbody = document.getElementById('milestone-body');
+  if (!tbody) return;
   let dragged = null;
 
-  // Add drag handle to every editable milestone row
   tbody.querySelectorAll('tr[data-id]').forEach(row => {
     if (row.id === 'add-row-form') return;
+    // Avoid adding duplicate handles on re-runs (e.g. after addRow)
+    if (row.querySelector('.drag-handle')) return;
+
     const firstTd = row.querySelector('td');
     if (!firstTd) return;
     const handle = document.createElement('span');
@@ -521,20 +524,17 @@ function activateDragSort() {
         const rows = Array.from(tbody.querySelectorAll('tr[data-id]:not(#add-row-form)'));
         const dragIdx = rows.indexOf(dragged);
         const dropIdx = rows.indexOf(row);
-        const addForm = document.getElementById('add-row-form');
         if (dragIdx < dropIdx) {
           row.after(dragged);
         } else {
           row.before(dragged);
         }
-        // Re-attach drag handle events for the moved row
         row.classList.remove('drag-over');
-        toast('Row moved ✓');
+        toast('Row moved \u2713');
       }
     });
   });
 
-  // Allow drop on tbody itself (when dragging below all rows)
   tbody.addEventListener('dragover', e => e.preventDefault());
 }
 
@@ -544,7 +544,6 @@ function activateEditable() {
     if (row.id === 'add-row-form') return;
     if (row.classList.contains('row-done')) return;
 
-    // Make date editable
     const dateEl = row.querySelector('.date-display');
     if (dateEl) {
       dateEl.classList.add('editable');
@@ -552,7 +551,6 @@ function activateEditable() {
       dateEl.addEventListener('click', () => startEdit(dateEl));
     }
 
-    // Add Mark as Done button to name cell
     if (!row.querySelector('.done-btn')) {
       const nameCell = row.cells[1];
       if (nameCell) {
@@ -571,50 +569,42 @@ function activateEditable() {
 }
 
 function markAsDone(row) {
-  // Convert row styling to done
   row.classList.remove('row-approval');
   row.classList.add('row-done');
   row.removeAttribute('draggable');
 
-  // Get the current date text
   const dateEl = row.querySelector('.date-display, .editable');
   const dateText = dateEl ? dateEl.textContent : '–';
 
-  // Replace date cell — remove editable, just show date in done style
   const dateCell = row.cells[0];
   dateCell.innerHTML = `<span class="ms-date">${dateText}</span>`;
 
-  // Replace status cell (index 3)
   const statusCell = row.cells[3];
   if (statusCell) statusCell.innerHTML = `<span class="done-check">✓ Done</span>`;
 
-  // Replace approval cell (index 4) with dash
   const approvalCell = row.cells[4];
   if (approvalCell) { approvalCell.innerHTML = '–'; approvalCell.className = 'ms-dash'; }
 
-  // Remove done button and drag handle from name cell
   const nameCell = row.cells[1];
   if (nameCell) {
     nameCell.querySelector('.done-btn')?.remove();
     nameCell.querySelector('.drag-handle')?.remove();
   }
-
-  // Remove drag handle from date cell
   dateCell.querySelector('.drag-handle')?.remove();
 
-  toast('Milestone marked as done ✓');
+  toast('Milestone marked as done \u2713');
 }
 
 function startEdit(el) {
-  if (el.closest('tr').querySelector('.edit-wrap')) return; // already editing
+  if (el.closest('tr').querySelector('.edit-wrap')) return;
   const original = el.textContent;
   const wrap = document.createElement('span');
   wrap.className = 'edit-wrap';
   wrap.innerHTML = `
     <input type="text" value="${original}" id="ei-${Date.now()}">
     <button class="btn-save">Save</button>
-    <button class="btn-cancel">✕</button>
-    <span class="saving-msg" style="display:none">Saving…</span>
+    <button class="btn-cancel">\u2715</button>
+    <span class="saving-msg" style="display:none">Saving\u2026</span>
   `;
   el.replaceWith(wrap);
   const input = wrap.querySelector('input');
@@ -651,12 +641,12 @@ async function commitEdit(wrap, original) {
   if (subitemId && subitemId !== 'null' && MON_TOKEN !== 'YOUR_MONDAY_API_KEY') {
     try {
       await syncMonday(subitemId, newVal);
-      toast('Updated in Monday ✓');
+      toast('Updated in Monday \u2713');
     } catch(e) {
-      toast('Saved — Monday sync failed', true);
+      toast('Saved \u2014 Monday sync failed', true);
     }
   } else {
-    toast('Date updated ✓');
+    toast('Date updated \u2713');
   }
 
   const span = document.createElement('span');
@@ -668,6 +658,7 @@ async function commitEdit(wrap, original) {
 }
 
 // ─── MONDAY SYNC ─────────────────────────────────
+// FIX: subitems require change_subitem_column_value, not change_column_value
 async function syncMonday(subitemId, dateStr) {
   const mon = { Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',
                 Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12' };
@@ -675,7 +666,7 @@ async function syncMonday(subitemId, dateStr) {
   if (!m) throw new Error('unparseable date');
   const iso = `2026-${mon[m[1]]}-${m[2].padStart(2,'0')}`;
   const val = JSON.stringify({ from: iso, to: iso });
-  const q = `mutation{change_column_value(board_id:${BOARD_ID},item_id:${subitemId},column_id:"${MON_COL}",value:${JSON.stringify(val)}){id}}`;
+  const q = `mutation{change_subitem_column_value(item_id:${subitemId},column_id:"${MON_COL}",value:${JSON.stringify(val)}){id}}`;
   const r = await fetch('https://api.monday.com/v2', {
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':MON_TOKEN,'API-Version':'2024-01'},
@@ -712,24 +703,22 @@ function addRow() {
     <td style="font-size:11px;${isApproval ? 'font-weight:600;color:var(--approval-text)' : 'color:var(--muted)'}">${isApproval ? 'Approval' : 'Upcoming'}</td>
     <td class="ms-dash">–</td>
   `;
-  // Insert before the add-row-form row
   const form = document.getElementById('add-row-form');
   form.parentNode.insertBefore(tr, form);
-  // Make the new date editable
   tr.querySelector('.date-display').addEventListener('click', function(){ startEdit(this); });
-  // Add drag handle and make draggable
-  if (isTeamMode()) {
-    const firstTd = tr.querySelector('td');
-    const handle = document.createElement('span');
-    handle.className = 'drag-handle';
-    handle.textContent = '⠿';
-    handle.title = 'Drag to reorder';
-    firstTd.prepend(handle);
-    tr.setAttribute('draggable', 'true');
-    activateDragSort();
+  // Add done button
+  const nameCell = tr.cells[1];
+  if (nameCell) {
+    const btn = document.createElement('button');
+    btn.className = 'done-btn';
+    btn.textContent = '✓ Mark done';
+    btn.addEventListener('click', (e) => { e.stopPropagation(); markAsDone(tr); });
+    nameCell.appendChild(btn);
   }
+  // activateDragSort will skip rows that already have a handle, so safe to call
+  activateDragSort();
   closeAddForm();
-  toast('Milestone added ✓');
+  toast('Milestone added \u2713');
 }
 
 // ─── TOAST ────────────────────────────────────────
