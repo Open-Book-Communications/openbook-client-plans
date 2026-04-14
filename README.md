@@ -25,15 +25,6 @@ The Action:
 
 ---
 
-## Active clients
-
-| Client | URL | Monday Group |
-|---|---|---|
-| Stony Brook School | [.../stony-brook](https://open-book-communications.github.io/openbook-client-plans/stony-brook) | `group_mm0jnqbf` |
-| KeHE Partnership | [.../kehe](https://open-book-communications.github.io/openbook-client-plans/kehe) | `group_mm1t9gqj` |
-
----
-
 ## Repo structure
 
 ```
