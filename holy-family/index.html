@@ -147,6 +147,19 @@
   .row-done .ms-type-label { opacity: .5; }
   .row-approval .ms-type-label { color: var(--approval-text); background: rgba(0,0,0,.04); }
 
+  /* RESOURCE LINKS */
+  .resource-links {
+    display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 8px;
+  }
+  .resource-link {
+    display: inline-block; font-size: 12.5px; font-weight: 600;
+    color: var(--navy); background: #fff;
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 8px 16px; text-decoration: none;
+    transition: all .15s;
+  }
+  .resource-link:hover { background: var(--navy); color: #fff; }
+
   /* FILTER BAR */
   .filter-bar {
     display: flex; align-items: center; justify-content: space-between;
@@ -661,6 +674,8 @@
     </tbody>
   </table>
 
+
+  
 
   <footer class="doc-footer">
     <div class="footer-brand">Open Book</div>
