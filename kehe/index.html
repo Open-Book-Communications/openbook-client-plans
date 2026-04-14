@@ -33,7 +33,7 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  .page { max-width: 820px; margin: 0 auto; padding: 56px 40px 80px; }
+  .page { max-width: 960px; margin: 0 auto; padding: 56px 40px 80px; }
 
   /* HEADER */
   .doc-header {
@@ -149,6 +149,8 @@
 
   /* TABLES */
   table { width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 13px; }
+  .tbl-milestones { table-layout: fixed; }
+  .tbl-milestones td { overflow-wrap: break-word; }
   thead tr { background: var(--navy); }
   thead th {
     font-size: 10.5px; font-weight: 600;
@@ -257,27 +259,27 @@
   <div class="phase-row">
     
     <div class="phase">
-      <div class="phase-circle active">1</div>
+      <div class="phase-circle active">●</div>
       <div class="phase-label active">2025 Impact Report</div>
     </div>
     
     <div class="phase">
-      <div class="phase-circle future">2</div>
+      <div class="phase-circle future">○</div>
       <div class="phase-label future">Impact Video Reskin</div>
     </div>
     
     <div class="phase">
-      <div class="phase-circle future">3</div>
+      <div class="phase-circle future">○</div>
       <div class="phase-label future">Owners & Donors Video</div>
     </div>
     
     <div class="phase">
-      <div class="phase-circle future">4</div>
+      <div class="phase-circle future">○</div>
       <div class="phase-label future">Website 1.5 Updates</div>
     </div>
     
     <div class="phase">
-      <div class="phase-circle future">5</div>
+      <div class="phase-circle future">○</div>
       <div class="phase-label future">Brand Guidelines + Training</div>
     </div>
     
@@ -365,11 +367,11 @@
   <div class="section-heading">Key Milestones + Sign-Off Dates</div>
   <table class="tbl-milestones">
     <thead><tr>
-      <th style="width:110px">Target Date</th>
+      <th style="width:80px">Target Date</th>
       <th>Milestone</th>
-      <th style="width:140px" class="ms-ws">Workstream</th>
-      <th style="width:110px">Status</th>
-      <th style="width:180px">Notes</th>
+      <th style="width:110px" class="ms-ws">Workstream</th>
+      <th style="width:70px">Status</th>
+      <th style="width:110px">Notes</th>
     </tr></thead>
     <tbody>
       
@@ -734,21 +736,6 @@
     </tbody>
   </table>
 
-  
-  
-  <div class="section-heading">Project Close-Out</div>
-  <table>
-    <thead><tr>
-      <th style="width:140px">Target Date</th>
-      <th>Milestone</th>
-    </tr></thead>
-    <tbody>
-      <tr><td class="ms-date">April 30, 2027</td><td class="ms-name">Project Close — All Deliverables Complete</td></tr>
-      <tr><td class="ms-date">April 30, 2027</td><td class="ms-name">90-Day Check-In Period Start</td></tr>
-      <tr><td class="ms-date">July 29, 2027</td><td class="ms-name">90-Day Check-In Period End</td></tr>
-    </tbody>
-  </table>
-  
 
   <footer class="doc-footer">
     <div class="footer-brand">Open Book</div>
@@ -760,7 +747,7 @@
 
 </div><!-- /.page -->
 
-<!-- LAST-UPDATED: 2026-04-13 20:16 CT -->
+<!-- LAST-UPDATED: 2026-04-13 20:31 CT -->
 
 <script>
 (function colorWorkstreams() {
