@@ -11,6 +11,18 @@ clients:
     project_type: linear
     # phases auto-derived from Monday's Phase column, sorted by earliest date
 
+  - slug: mn-land-trust
+    display_name: Minnesota Land Trust
+    monday_group_id: group_mm0pn6br
+    kickoff_date: "2025-09-25"
+    close_date: "2026-09-02"
+    project_type: linear
+    phases:
+      - KNOW
+      - SHOW
+      - BUILD
+      - CLOSE-OUT
+
   - slug: kehe
     display_name: "KeHE 2026\u201327 Partnership"
     monday_group_id: group_mm1t9gqj
