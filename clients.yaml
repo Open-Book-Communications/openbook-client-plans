@@ -11,6 +11,13 @@ clients:
     project_type: linear
     # phases auto-derived from Monday's Phase column, sorted by earliest date
 
+  - slug: dairyland
+    display_name: Dairyland
+    monday_group_id: group_mm0184n4
+    kickoff_date: "2026-02-10"
+    close_date: "2026-08-03"
+    project_type: linear
+
   - slug: holy-family
     display_name: Holy Family
     monday_group_id: group_mm01skcr
