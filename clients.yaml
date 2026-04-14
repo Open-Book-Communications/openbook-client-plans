@@ -9,7 +9,12 @@ clients:
     kickoff_date: "2025-11-17"
     close_date: "2026-08-31"
     project_type: linear
-    # phases auto-derived from Monday's Phase column, sorted by earliest date
+    phases:
+      - START-UP
+      - KNOW
+      - SHOW
+      - BUILD
+      - CLOSE-OUT
 
   - slug: dairyland
     display_name: Dairyland
