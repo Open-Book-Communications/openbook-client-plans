@@ -309,15 +309,15 @@ def compute_linear_phases(phase_names: list[str] | None, workstreams: list[Works
     for phase_name in phase_names:
         # Find workstreams tagged with this phase
         phase_ws = [ws for ws in workstreams if ws.phase == phase_name]
-        # Only consider workstreams that have visible subitems
-        phase_ws_with_subs = [ws for ws in phase_ws if ws.visible_subitems]
+        # Consider workstreams that have any subitems
+        phase_ws_with_subs = [ws for ws in phase_ws if ws.all_subitems]
 
         if not phase_ws_with_subs:
             state = "complete" if is_closed else "upcoming"
             steps.append({"name": phase_name, "state": state, "window": ""})
             continue
 
-        all_subs = [s for ws in phase_ws_with_subs for s in ws.visible_subitems]
+        all_subs = [s for ws in phase_ws_with_subs for s in ws.all_subitems]
         done_count = sum(1 for s in all_subs if s.done)
         total = len(all_subs)
         incomplete = total - done_count
