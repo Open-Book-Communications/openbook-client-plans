@@ -2,7 +2,8 @@
 
 Live, client-facing project dashboards hosted on GitHub Pages. Each client gets a clean web page — shareable via URL, always current, no PDF needed.
 
-**Live site:** [plans.teamopenbook.com](https://plans.teamopenbook.com)
+**Live site:** [open-book-communications.github.io/openbook-client-plans](https://open-book-communications.github.io/openbook-client-plans)
+*(Will move to plans.teamopenbook.com once DNS is configured)*
 
 ---
 
@@ -28,8 +29,8 @@ The Action:
 
 | Client | URL | Monday Group |
 |---|---|---|
-| Stony Brook School | [plans.teamopenbook.com/stony-brook](https://plans.teamopenbook.com/stony-brook) | `topics` |
-| KeHE Partnership | [plans.teamopenbook.com/kehe](https://plans.teamopenbook.com/kehe) | `group_mm1t9gqj` |
+| Stony Brook School | [.../stony-brook](https://open-book-communications.github.io/openbook-client-plans/stony-brook) | `group_mm0jnqbf` |
+| KeHE Partnership | [.../kehe](https://open-book-communications.github.io/openbook-client-plans/kehe) | `group_mm1t9gqj` |
 
 ---
 
@@ -40,14 +41,14 @@ openbook-client-plans/
 ├── .github/workflows/
 │   └── refresh-dashboards.yml    ← cron + manual trigger
 ├── _template/
-│   └── index.html                ← Jinja2 template
+│   └── index.html                ← Jinja2 template (+ JS for color pills)
 ├── scripts/
 │   ├── refresh-dashboards.py     ← main script
 │   └── requirements.txt          ← Python deps
 ├── clients.yaml                  ← client config
 ├── index.html                    ← root landing page
-├── stony-brook/index.html        ← generated
-├── kehe/index.html               ← generated
+├── stony-brook/index.html        ← auto-generated
+├── kehe/index.html               ← auto-generated
 └── README.md
 ```
 
@@ -64,12 +65,6 @@ openbook-client-plans/
     kickoff_date: "2026-06-01"
     close_date: "2027-05-31"
     project_type: linear        # or "ongoing"
-    phases:                     # for linear projects
-      - Sign-to-Start
-      - Know
-      - Show
-      - Build
-      - Close-Out
 ```
 
 2. **Commit and push.** The next Action run creates `new-client/index.html` automatically.
@@ -80,7 +75,7 @@ That's it. The folder is created, the dashboard is live within ~60 seconds.
 
 ### Project types
 
-- **`linear`** — phased projects (e.g. Sign→Know→Show→Build→Close). List phase names in `phases:`. States derived from Monday data.
+- **`linear`** — phased projects (e.g. Know→Show→Build→Close-Out). Phases auto-derive from Monday's Phase column, sorted by earliest date. No manual config needed.
 - **`ongoing`** — deliverable-based projects (e.g. KeHE). List major deliverable names in `deliverables:` matching Monday workstream names exactly.
 
 ---
@@ -133,11 +128,11 @@ The Monday token is **never** stored in code. Rotate quarterly via Monday → De
 
 ---
 
-## DNS
+## DNS (pending)
 
-`plans.teamopenbook.com` → CNAME → `open-book-communications.github.io`
+Custom domain `plans.teamopenbook.com` requires a CNAME DNS record pointing to `open-book-communications.github.io`. Once that record is live, add a `CNAME` file to the repo root containing `plans.teamopenbook.com`.
 
-Domain verified via TXT record at `_github-pages-challenge-Open-Book-Communications.plans.teamopenbook.com`.
+Until then, dashboards are at `open-book-communications.github.io/openbook-client-plans/{slug}`.
 
 ---
 
@@ -148,7 +143,9 @@ Domain verified via TXT record at `_github-pages-challenge-Open-Book-Communicati
 | Dashboard shows stale data | Check Actions tab for failed runs. Trigger manual refresh. |
 | Monday API errors | Rotate `MONDAY_API_TOKEN` in repo Secrets. |
 | New client folder not created | Verify `slug` and `monday_group_id` in `clients.yaml`. Check Action logs. |
-| Phase tracker stuck on "Upcoming" | Ensure workstreams have the Phase column set and subitems marked Visible to Client. |
+| Phase tracker stuck on "Upcoming" | Ensure workstreams have the Phase column set. Status uses all subitems (not just client-visible). |
+| Timeline window looks wrong | Timeline derives from all subitems' dates, not just visible ones. Check date column on subitems. |
+| Recurring meetings showing 12+ rows | Workstreams with 5+ subitems and "Meeting" in the name auto-consolidate into one row. |
 
 GitHub sends failure emails automatically when the Action fails.
 
