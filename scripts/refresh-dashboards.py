@@ -283,9 +283,9 @@ def _auto_derive_phases(workstreams: list[Workstream]) -> list[str]:
 
     for ws in workstreams:
         p = ws.phase
-        if not p or p in SKIP_PHASES or not ws.visible_subitems:
+        if not p or p in SKIP_PHASES or not ws.all_subitems:
             continue
-        dates = sorted([s.date for s in ws.visible_subitems if s.date])
+        dates = sorted([s.date for s in ws.all_subitems if s.date])
         earliest = dates[0] if dates else None
         if p not in phase_earliest or (earliest and (phase_earliest[p] is None or earliest < phase_earliest[p])):
             phase_earliest[p] = earliest
