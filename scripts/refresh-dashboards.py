@@ -184,6 +184,19 @@ def parse_date(item: dict, col_id: str) -> date | None:
     return None
 
 
+def parse_date_to(item: dict, col_id: str) -> date | None:
+    """Parse the 'to' end of a timeline column. Returns None if no range."""
+    val = get_col_value_parsed(item, col_id)
+    if val:
+        date_str = val.get("to")
+        if date_str:
+            try:
+                return date.fromisoformat(date_str[:10])
+            except ValueError:
+                pass
+    return None
+
+
 def format_date(d: date | None) -> str:
     """Format a date as 'Mon DD' or 'Mon DD, YYYY' if not current year."""
     if not d:
@@ -191,6 +204,31 @@ def format_date(d: date | None) -> str:
     if d.year == date.today().year:
         return d.strftime("%b %-d")
     return d.strftime("%b %-d, %Y")
+
+
+def format_date_range(d_from: date | None, d_to: date | None) -> str:
+    """Format a date range compactly:
+       single date         -> 'Apr 14'
+       same month          -> 'Apr 14 – 28'
+       cross-month         -> 'Apr 28 – May 5'
+       cross-year          -> 'Dec 28, 2026 – Jan 5, 2027'
+    """
+    if not d_from:
+        return "–"
+    if not d_to or d_to == d_from:
+        return format_date(d_from)
+    # Cross-year
+    if d_from.year != d_to.year:
+        return f"{format_date(d_from)} – {format_date(d_to)}"
+    # Same year, same month -> 'Apr 14 – 28'
+    if d_from.month == d_to.month:
+        end = d_to.strftime("%-d")
+        # If not current year, append year suffix
+        if d_from.year != date.today().year:
+            return f"{d_from.strftime('%b %-d')} – {end}, {d_from.year}"
+        return f"{d_from.strftime('%b %-d')} – {end}"
+    # Same year, cross-month -> 'Apr 28 – May 5'
+    return f"{format_date(d_from)} – {format_date(d_to)}"
 
 
 def format_date_long(d: date | None) -> str:
@@ -216,6 +254,7 @@ class Subitem:
         self.is_milestone = is_boolean_true(raw, COL_MILESTONE)
         self.done = is_done(raw)
         self.date = parse_date(raw, COL_SUBITEM_DATE)
+        self.date_to = parse_date_to(raw, COL_SUBITEM_DATE)
         self.type = get_subitem_type(raw)
         self.notes = get_col_text(raw, COL_SUBITEM_NOTES)
         # Store raw status text for in-progress detection
@@ -425,7 +464,7 @@ def build_milestones(workstreams: list[Workstream], client_cfg: dict) -> list[di
                 "name": sub.name,
                 "workstream": ws.name,
                 "date": sub.date,
-                "date_display": format_date(sub.date),
+                "date_display": format_date_range(sub.date, sub.date_to),
                 "done": sub.done,
                 "is_milestone": sub.is_milestone,
                 "is_approval": is_approval,
