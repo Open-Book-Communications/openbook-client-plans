@@ -7,7 +7,7 @@ clients:
     display_name: CarterBaldwin
     monday_group_id: group_mm0j6dwh
     kickoff_date: "2025-11-12"
-    close_date: "2026-06-15"
+    close_date: "2026-08-18"
     project_type: linear
 
   - slug: stony-brook

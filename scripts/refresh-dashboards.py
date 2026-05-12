@@ -206,6 +206,21 @@ def format_date(d: date | None) -> str:
     return d.strftime("%b %-d, %Y")
 
 
+def _derive_close_from_task(workstreams: list) -> date | None:
+    """Look for a subitem named like 'Send Project Close Email to Client'
+    across all workstreams and use its date as the project close date.
+    Returns None if no such task is found or it has no date set. Match is
+    case-insensitive, substring-tolerant ('send project close email' is enough).
+    """
+    needle = "send project close email"
+    for ws in workstreams:
+        for sub in ws.all_subitems:
+            if needle in (sub.name or "").lower():
+                # Prefer the END of the timeline if set, otherwise the start
+                return sub.date_to or sub.date
+    return None
+
+
 def format_date_range(d_from: date | None, d_to: date | None) -> str:
     """Format a date range compactly:
        single date         -> 'Apr 14'
@@ -537,7 +552,7 @@ def render_client(client_cfg: dict, token: str, jinja_env: Environment) -> str |
     print(f"  {len(visible_workstreams)} workstreams with visible subitems "
           f"(of {len(workstreams)} total)")
 
-    # Parse dates
+    # Parse dates (yaml provides fallbacks)
     kickoff = None
     close = None
     if client_cfg.get("kickoff_date"):
@@ -550,6 +565,12 @@ def render_client(client_cfg: dict, token: str, jinja_env: Environment) -> str |
             close = date.fromisoformat(client_cfg["close_date"])
         except ValueError:
             pass
+
+    # Dynamic override: derive close date from "Send Project Close Email to Client"
+    # task in Monday, if present. Lets the date stay in sync as plans shift.
+    derived_close = _derive_close_from_task(workstreams)
+    if derived_close:
+        close = derived_close
 
     is_closed = close is not None and date.today() > close
 
