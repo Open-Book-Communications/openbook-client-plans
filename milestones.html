@@ -7,880 +7,415 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f7f5f0;
-    --surface: #ffffff;
-    --border: #e8e3d8;
-    --text-primary: #1a1814;
-    --text-secondary: #6b6560;
-    --text-muted: #a09890;
-    --accent: #2a5c45;
-    --accent-light: #eaf2ec;
-    --amber: #c4660a;
-    --amber-light: #fef3e8;
-    --blue: #1a4a7a;
-    --blue-light: #eaf1f9;
-    --red: #8b2020;
-    --red-light: #fdf0f0;
-    --client-mnt: #1a6b4a;
-    --client-maranatha: #4a3a8a;
-    --client-cb: #1a4a7a;
-    --client-dairyland: #8b3a10;
-    --client-stonybrook: #2a6010;
-    --client-kehe: #6b3a00;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 400;
-    background: var(--bg);
-    color: var(--text-primary);
-    min-height: 100vh;
-    padding: 0;
-  }
-
-  /* ── Header ── */
-  .header {
-    background: var(--text-primary);
-    padding: 28px 40px 24px;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 20px;
-  }
-  .header-left { display: flex; align-items: baseline; gap: 16px; }
-  .logo {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    color: #ffffff;
-    letter-spacing: -0.02em;
-  }
-  .logo span { color: #8fba9f; }
-  .page-title {
-    font-size: 13px;
-    font-weight: 300;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    border-left: 1px solid rgba(255,255,255,0.15);
-    padding-left: 16px;
-  }
-  .header-meta {
-    font-size: 12px;
-    color: rgba(255,255,255,0.4);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  #last-updated { color: rgba(255,255,255,0.55); }
-
-  /* ── Main layout ── */
-  .main { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
-
-  /* ── Controls bar ── */
-  .controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-  }
-  .controls-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-right: 2px;
-  }
-  .filter-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    padding: 5px 14px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .filter-btn:hover { border-color: var(--text-muted); color: var(--text-primary); }
-  .filter-btn.active {
-    background: var(--text-primary);
-    border-color: var(--text-primary);
-    color: #ffffff;
-  }
-  .refresh-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    padding: 6px 16px;
-    border-radius: 6px;
-    border: 1px solid var(--accent);
-    background: var(--accent-light);
-    color: var(--accent);
-    cursor: pointer;
-    margin-left: auto;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .refresh-btn:hover { background: var(--accent); color: white; }
-  .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .refresh-icon { display: inline-block; transition: transform 0.4s; }
-  .refresh-btn.loading .refresh-icon { animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ── Summary row ── */
-  .summary-row {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin-bottom: 32px;
-  }
-  .summary-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-  }
-  .summary-label {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-  }
-  .summary-count {
-    font-family: 'DM Serif Display', serif;
-    font-size: 28px;
-    line-height: 1;
-    color: var(--text-primary);
-  }
-  .summary-card.overdue .summary-count { color: var(--red); }
-  .summary-card.in-progress .summary-count { color: var(--accent); }
-
-  /* ── Section headers ── */
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0 0 10px;
-  }
-  .section-label {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-  .section-label.overdue { color: var(--red); }
-  .section-label.in-progress { color: var(--accent); }
-  .section-divider {
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-  .section-count {
-    font-size: 11px;
-    color: var(--text-muted);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1px 8px;
-  }
-
-  /* ── Milestone section ── */
-  .milestone-section { margin-bottom: 28px; }
-
-  /* ── Milestone card ── */
-  .milestone-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 13px 16px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 6px;
-    transition: box-shadow 0.15s, border-color 0.15s;
-    text-decoration: none;
-    color: inherit;
-  }
-  .milestone-card:hover {
-    border-color: var(--text-muted);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-  .milestone-accent {
-    width: 3px;
-    min-height: 42px;
-    border-radius: 2px;
-    flex-shrink: 0;
-    align-self: stretch;
-  }
-  .milestone-body { flex: 1; min-width: 0; }
-  .milestone-name {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 4px;
-    line-height: 1.3;
-  }
-  .milestone-meta {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .client-tag {
-    font-size: 11px;
-    font-weight: 500;
-    padding: 1px 7px;
-    border-radius: 3px;
-    white-space: nowrap;
-  }
-  .meta-sep { font-size: 11px; color: var(--text-muted); }
-  .meta-text {
-    font-size: 12px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 200px;
-  }
-  .milestone-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 5px;
-    flex-shrink: 0;
-  }
-  .date-label {
-    font-size: 12px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-  }
-  .status-chip {
-    font-size: 11px;
-    font-weight: 500;
-    padding: 2px 9px;
-    border-radius: 10px;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .status-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .ext-link {
-    font-size: 13px;
-    color: var(--text-muted);
-    flex-shrink: 0;
-    text-decoration: none;
-    line-height: 1;
-    transition: color 0.1s;
-  }
-  .ext-link:hover { color: var(--text-primary); }
-
-  /* ── Token gate ── */
-  .token-gate {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 32px 36px;
-    max-width: 480px;
-    margin: 60px auto;
-  }
-  .token-gate h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    margin-bottom: 10px;
-    color: var(--text-primary);
-  }
-  .token-gate p {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
-    line-height: 1.6;
-  }
-  .token-input {
-    width: 100%;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    padding: 10px 14px;
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    background: var(--bg);
-    color: var(--text-primary);
-    margin-bottom: 12px;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .token-input:focus { border-color: var(--accent); }
-  .token-submit {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 10px 24px;
-    border-radius: 7px;
-    border: none;
-    background: var(--accent);
-    color: white;
-    cursor: pointer;
-    width: 100%;
-    transition: opacity 0.15s;
-  }
-  .token-submit:hover { opacity: 0.88; }
-  .token-hint {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 12px;
-    line-height: 1.5;
-  }
-  .token-hint a { color: var(--accent); }
-
-  /* ── Loading / error states ── */
-  .state-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 80px 24px;
-    text-align: center;
-  }
-  .state-spinner {
-    width: 28px;
-    height: 28px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin-bottom: 16px;
-  }
-  .state-title { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
-  .state-sub { font-size: 13px; color: var(--text-secondary); }
-
-  /* ── Legend ── */
-  .legend {
-    display: flex;
-    gap: 18px;
-    flex-wrap: wrap;
-    align-items: center;
-    padding-top: 20px;
-    margin-top: 8px;
-    border-top: 1px solid var(--border);
-  }
-  .legend-item { display: flex; align-items: center; gap: 6px; }
-  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-  .legend-label { font-size: 12px; color: var(--text-secondary); }
-  .legend-count { font-size: 12px; color: var(--text-muted); }
-  .legend-total { margin-left: auto; font-size: 12px; color: var(--text-muted); }
-
-  @media (max-width: 640px) {
-    .header { padding: 20px; }
-    .main { padding: 20px 16px 48px; }
-    .summary-row { grid-template-columns: repeat(3, 1fr); }
-    .milestone-name { font-size: 13px; }
-  }
+:root {
+  --bg: #f7f5f0; --surface: #fff; --border: #e8e3d8;
+  --text-primary: #1a1814; --text-secondary: #6b6560; --text-muted: #a09890;
+  --accent: #2a5c45; --accent-light: #eaf2ec;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; }
+.header { background: var(--text-primary); padding: 24px 40px; display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.logo { font-family: 'DM Serif Display', serif; font-size: 22px; color: #fff; letter-spacing: -0.02em; }
+.logo span { color: #8fba9f; }
+.page-title { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.5); letter-spacing: 0.08em; text-transform: uppercase; border-left: 1px solid rgba(255,255,255,0.15); padding-left: 16px; }
+.header-meta { font-size: 12px; color: rgba(255,255,255,0.55); }
+.main { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+.controls { display: flex; align-items: center; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+.controls-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.filter-btn { font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+.filter-btn:hover { border-color: var(--text-muted); color: var(--text-primary); }
+.filter-btn.active { color: #fff; border-color: transparent; }
+.refresh-btn { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 6px 16px; border-radius: 6px; border: 1px solid var(--accent); background: var(--accent-light); color: var(--accent); cursor: pointer; margin-left: auto; display: flex; align-items: center; gap: 6px; transition: all 0.15s; }
+.refresh-btn:hover { background: var(--accent); color: #fff; }
+.refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.spin { display: inline-block; }
+.refresh-btn.loading .spin { animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.summary-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin-bottom: 32px; }
+.summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.summary-label { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+.summary-count { font-family: 'DM Serif Display', serif; font-size: 28px; line-height: 1; color: var(--text-primary); }
+.summary-card.overdue .summary-count { color: #8b2020; }
+.summary-card.in-progress .summary-count { color: var(--accent); }
+.section-header { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; }
+.section-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+.section-label.overdue { color: #8b2020; }
+.section-label.in-progress { color: var(--accent); }
+.section-divider { flex: 1; height: 1px; background: var(--border); }
+.section-count { font-size: 11px; color: var(--text-muted); background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 1px 8px; }
+.milestone-section { margin-bottom: 28px; }
+.milestone-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 13px 16px; display: flex; align-items: center; gap: 14px; margin-bottom: 6px; text-decoration: none; color: inherit; transition: box-shadow 0.15s, border-color 0.15s; }
+.milestone-card:hover { border-color: var(--text-muted); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.milestone-accent { width: 3px; min-height: 42px; border-radius: 2px; flex-shrink: 0; align-self: stretch; }
+.milestone-body { flex: 1; min-width: 0; }
+.milestone-name { font-size: 14px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+.milestone-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.client-tag { font-size: 11px; font-weight: 500; padding: 1px 7px; border-radius: 3px; white-space: nowrap; }
+.meta-sep { font-size: 11px; color: var(--text-muted); }
+.meta-text { font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+.milestone-right { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; }
+.date-label { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+.status-chip { font-size: 11px; font-weight: 500; padding: 2px 9px; border-radius: 10px; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+.status-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.ext-link { font-size: 13px; color: var(--text-muted); flex-shrink: 0; text-decoration: none; }
+.ext-link:hover { color: var(--text-primary); }
+.token-gate { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 32px 36px; max-width: 480px; margin: 60px auto; }
+.token-gate h2 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 10px; }
+.token-gate p { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; }
+.token-input { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg); color: var(--text-primary); margin-bottom: 12px; outline: none; }
+.token-input:focus { border-color: var(--accent); }
+.token-submit { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; padding: 10px 24px; border-radius: 7px; border: none; background: var(--accent); color: #fff; cursor: pointer; width: 100%; }
+.token-submit:hover { opacity: 0.88; }
+.token-hint { font-size: 12px; color: var(--text-muted); margin-top: 12px; line-height: 1.5; }
+.token-hint a { color: var(--accent); }
+.state-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; text-align: center; }
+.state-spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 16px; }
+.state-title { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
+.state-sub { font-size: 13px; color: var(--text-secondary); }
+.legend { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; padding-top: 20px; margin-top: 8px; border-top: 1px solid var(--border); }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.legend-label { font-size: 12px; color: var(--text-secondary); }
+.legend-total { margin-left: auto; font-size: 12px; color: var(--text-muted); }
+@media (max-width: 640px) { .header { padding: 20px; } .main { padding: 20px 16px 48px; } .summary-row { grid-template-columns: repeat(3,1fr); } }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-left">
+  <div style="display:flex;align-items:baseline;gap:16px">
     <div class="logo">Open <span>Book</span></div>
     <div class="page-title">Milestone Radar</div>
   </div>
-  <div class="header-meta">
-    <span id="last-updated">—</span>
-  </div>
+  <div class="header-meta" id="last-updated">—</div>
 </div>
 
-<div class="main" id="main-content">
-  <!-- token gate renders here, then dashboard -->
-</div>
+<div class="main" id="main-content"></div>
 
 <script>
-// ── Config ────────────────────────────────────────────────────────────────
+// ── CONFIG ────────────────────────────────────────────────────────────────
 const PARENT_BOARD_ID  = '18397531209';
 const SUBITEM_BOARD_ID = '18397531210';
 const STORAGE_KEY      = 'ob_monday_token';
 
-// Group title → { lead, color }
-// Only needs updating when a new client group is added to the board.
+// Lead shortname (as it appears in group title after " - ") → full name + color
+const LEAD_MAP = {
+  'Will':    { name: 'Will Jacott',     color: '#1a4a7a' },
+  'James':   { name: 'James Diers',     color: '#1a6b4a' },
+  'Jeremy':  { name: 'Jeremy Emmerich', color: '#2a6010' },
+  'Joa':     { name: 'Joa Koeneke',     color: '#993556' },
+};
 
+const LEAD_COLORS = {
+  'Will Jacott': '#1a4a7a', 'James Diers': '#1a6b4a',
+  'Jeremy Emmerich': '#2a6010', 'Joa Koeneke': '#993556',
+};
 
-// Window: today → +21 days
+// ── HELPERS ───────────────────────────────────────────────────────────────
 function getWindow() {
   const today = new Date(); today.setHours(0,0,0,0);
   const end = new Date(today); end.setDate(today.getDate() + 21);
   return { today, end };
 }
-
-function parseRange(val) {
-  if (!val || typeof val !== 'string' || !val.includes(' - ')) return null;
-  const [s, e] = val.split(' - ');
-  try { return { start: new Date(s.trim()+'T00:00:00'), end: new Date(e.trim()+'T00:00:00'), startStr: s.trim(), endStr: e.trim() }; }
-  catch { return null; }
+function parseRange(text) {
+  if (!text || !text.includes(' - ')) return null;
+  const [s, e] = text.split(' - ');
+  try {
+    const start = new Date(s.trim()+'T00:00:00'), end = new Date(e.trim()+'T00:00:00');
+    if (isNaN(start)||isNaN(end)) return null;
+    return { start, end, startStr: s.trim(), endStr: e.trim() };
+  } catch { return null; }
 }
-
 function overlaps(range) {
-  const { today, end } = getWindow();
+  const {today, end} = getWindow();
   return range && range.start <= end && range.end >= today;
 }
-
-function daysUntil(d) {
-  const t = new Date(); t.setHours(0,0,0,0);
-  return Math.round((d - t) / 86400000);
-}
-
-function fmtDate(s) {
-  return new Date(s+'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-
-function dateLabel(m) {
-  return m.startStr === m.endStr ? fmtDate(m.startStr) : fmtDate(m.startStr) + ' – ' + fmtDate(m.endStr);
-}
-
+function daysUntil(d) { const t=new Date();t.setHours(0,0,0,0);return Math.round((d-t)/86400000); }
+function fmtDate(s) { return new Date(s+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+function dateLabel(m) { return m.startStr===m.endStr ? fmtDate(m.startStr) : fmtDate(m.startStr)+' – '+fmtDate(m.endStr); }
 function statusChip(m) {
-  const ds = daysUntil(m.range.start), de = daysUntil(m.range.end);
-  if (de < 0)    return { label: 'Ended',       bg: '#f4f2ee', tc: '#888780', dot: '#b0a89a' };
-  if (ds <= 0)   return { label: 'In progress', bg: '#eaf2ec', tc: '#1a6b4a', dot: '#2a8a5a' };
-  if (ds <= 1)   return { label: 'Tomorrow',    bg: '#fef3e8', tc: '#8b3a00', dot: '#c4660a' };
-  if (ds <= 4)   return { label: ds+'d',        bg: '#fef3e8', tc: '#8b3a00', dot: '#c4660a' };
-  if (ds <= 7)   return { label: ds+'d',        bg: '#eaf1f9', tc: '#1a4a7a', dot: '#3a7ab8' };
-  return { label: ds+'d', bg: '#eef4eb', tc: '#2a6010', dot: '#4a9a20' };
+  const ds=daysUntil(m.range.start), de=daysUntil(m.range.end);
+  if(de<0)  return{label:'Ended',      bg:'#f4f2ee',tc:'#888780',dot:'#b0a89a'};
+  if(ds<=0) return{label:'In progress',bg:'#eaf2ec',tc:'#1a6b4a',dot:'#2a8a5a'};
+  if(ds<=1) return{label:'Tomorrow',   bg:'#fef3e8',tc:'#8b3a00',dot:'#c4660a'};
+  if(ds<=4) return{label:ds+'d',       bg:'#fef3e8',tc:'#8b3a00',dot:'#c4660a'};
+  if(ds<=7) return{label:ds+'d',       bg:'#eaf1f9',tc:'#1a4a7a',dot:'#3a7ab8'};
+  return{label:ds+'d',bg:'#eef4eb',tc:'#2a6010',dot:'#4a9a20'};
 }
-
 function bucket(m) {
-  const ds = daysUntil(m.range.start), de = daysUntil(m.range.end);
-  if (de < 0)  return 'overdue';
-  if (ds <= 0) return 'in-progress';
-  if (ds <= 7) return 'this-week';
-  if (ds <= 14) return 'next-week';
-  return 'week-3';
+  const ds=daysUntil(m.range.start), de=daysUntil(m.range.end);
+  if(de<0)   return'overdue';
+  if(ds<=0)  return'in-progress';
+  if(ds<=7)  return'this-week';
+  if(ds<=14) return'next-week';
+  return'week-3';
 }
+const BUCKET_LABELS = {overdue:'Overdue','in-progress':'In progress','this-week':'This week','next-week':'Next week','week-3':'Week 3'};
+const BUCKET_ORDER  = ['overdue','in-progress','this-week','next-week','week-3'];
 
-const BUCKET_LABELS = {
-  'overdue':     'Overdue',
-  'in-progress': 'In progress',
-  'this-week':   'This week',
-  'next-week':   'Next week',
-  'week-3':      'Week 3',
-};
-const BUCKET_ORDER = ['overdue','in-progress','this-week','next-week','week-3'];
-
-
-// ── Monday.com API ────────────────────────────────────────────────────────
-
-async function apiCall(token, query, variables = {}) {
-  const resp = await fetch('https://api.monday.com/v2', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': token,
-      'API-Version': '2024-01',
-    },
-    body: JSON.stringify({ query, variables }),
+// ── MONDAY API ────────────────────────────────────────────────────────────
+async function apiCall(token, query, variables={}) {
+  const r = await fetch('https://api.monday.com/v2', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':token,'API-Version':'2024-01'},
+    body:JSON.stringify({query, variables}),
   });
-  if (!resp.ok) throw new Error('Monday.com API error: ' + resp.status);
-  const data = await resp.json();
-  if (data.errors) throw new Error(data.errors[0].message);
-  return data;
+  if(!r.ok) throw new Error('Monday.com API error: '+r.status);
+  const d = await r.json();
+  if(d.errors) throw new Error(d.errors[0].message);
+  return d;
 }
 
-// Step 1: Fetch parent board to build subitem_id → { client, deliverable, lead, color }
+// Reads Active Projects parent board and maps every subitem ID →
+// { client, deliverable, lead, color } — fully dynamic, never stale
 async function buildSubitemMap(token) {
-  const query = `
-    query ($boardId: ID!, $cursor: String) {
-      boards(ids: [$boardId]) {
-        items_page(limit: 100, cursor: $cursor) {
-          cursor
-          items {
-            id name
-            group { title }
-            subitems { id }
-          }
-        }
+  const query = `query($boardId:ID!,$cursor:String){
+    boards(ids:[$boardId]){
+      items_page(limit:100,cursor:$cursor){
+        cursor
+        items{id name group{title} subitems{id}}
       }
     }
-  `;
-
-  // Extract client name and lead from group title like "CarterBaldwin - Will"
-  // The group title format is always "Client Name - Lead First Name"
-  function parseGroup(groupTitle) {
-    const LEAD_COLORS = {
-      'Will Jacott':     '#1a4a7a',
-      'James Diers':     '#1a6b4a',
-      'Jeremy Emmerich': '#2a6010',
-      'Joa Koeneke':     '#993556',
-    };
-    const LEAD_NAMES = {
-      'Will':    'Will Jacott',
-      'James':   'James Diers',
-      'Jeremy':  'Jeremy Emmerich',
-      'Joa':     'Joa Koeneke',
-    };
-
-    // Split on " - " to get client and lead shortname
-    const dashIdx = groupTitle.lastIndexOf(' - ');
-    if (dashIdx === -1) {
-      return { client: groupTitle, lead: '—', color: '#888780' };
-    }
-    const client = groupTitle.slice(0, dashIdx).trim();
-    const leadShort = groupTitle.slice(dashIdx + 3).trim();
-    const lead = LEAD_NAMES[leadShort] || leadShort;
-    const color = LEAD_COLORS[lead] || '#888780';
-    return { client, lead, color };
-  }
-
-  const subitemMap = {};
-  let cursor = null, page = 0;
-
-  while (page < 5) {
-    const data = await apiCall(token, query, { boardId: PARENT_BOARD_ID, cursor });
-    const { items_page } = data.data.boards[0];
-
-    for (const item of items_page.items) {
-      const { client, lead, color } = parseGroup(item.group?.title || '');
-      for (const sub of item.subitems || []) {
-        subitemMap[sub.id] = {
-          client,
-          deliverable: item.name,
-          lead,
-          color,
-        };
+  }`;
+  const map = {};
+  let cursor=null, page=0;
+  while(page<5) {
+    const data = await apiCall(token, query, {boardId:PARENT_BOARD_ID, cursor});
+    const {items_page} = data.data.boards[0];
+    for(const item of items_page.items) {
+      const gt = item.group?.title || '';
+      // Group titles: "Client Name - LeadFirstName"  e.g. "MN Land Trust - James"
+      const dash = gt.lastIndexOf(' - ');
+      const client    = dash>=0 ? gt.slice(0,dash).trim() : gt;
+      const leadShort = dash>=0 ? gt.slice(dash+3).trim() : '';
+      const leadInfo  = LEAD_MAP[leadShort] || {name: leadShort||'—', color:'#888780'};
+      for(const sub of (item.subitems||[])) {
+        map[sub.id] = {client, deliverable:item.name, lead:leadInfo.name, color:leadInfo.color};
       }
     }
-
     cursor = items_page.cursor;
     page++;
-    if (!cursor) break;
+    if(!cursor) break;
   }
-
-  return subitemMap;
+  return map;
 }
 
-// Step 2: Fetch all subitems with milestone checkbox + date columns
+// Fetches all subitems from subitems board (up to 1500)
 async function fetchSubitems(token) {
-  const query = `
-    query ($boardId: ID!, $cursor: String) {
-      boards(ids: [$boardId]) {
-        items_page(limit: 100, cursor: $cursor) {
-          cursor
-          items {
-            id name url
-            column_values(ids: ["boolean_mm00qyep","timerange_mm00qh4t","person"]) {
-              id text value
-            }
-          }
+  const query = `query($boardId:ID!,$cursor:String){
+    boards(ids:[$boardId]){
+      items_page(limit:100,cursor:$cursor){
+        cursor
+        items{id name url
+          column_values(ids:["boolean_mm00qyep","timerange_mm00qh4t","person"]){id text value}
         }
       }
     }
-  `;
-
-  let allItems = [], cursor = null, page = 0;
-
-  while (page < 15) {  // up to 1500 subitems
-    const data = await apiCall(token, query, { boardId: SUBITEM_BOARD_ID, cursor });
-    const { items_page } = data.data.boards[0];
-    allItems = allItems.concat(items_page.items);
+  }`;
+  let all=[], cursor=null, page=0;
+  while(page<15) {
+    const data = await apiCall(token, query, {boardId:SUBITEM_BOARD_ID, cursor});
+    const {items_page} = data.data.boards[0];
+    all = all.concat(items_page.items);
     cursor = items_page.cursor;
     page++;
-    if (!cursor) break;
+    if(!cursor) break;
   }
-
-  return allItems;
+  return all;
 }
 
-async function fetchAllMilestones(token) {
-  // Run both fetches in parallel
-  const [subitemMap, allSubitems] = await Promise.all([
-    buildSubitemMap(token),
-    fetchSubitems(token),
-  ]);
-  return { subitemMap, allSubitems };
-}
-
-function processItems({ subitemMap, allSubitems }) {
-  const milestones = [];
-
-  for (const item of allSubitems) {
+function processItems(subitems, subitemMap) {
+  const out = [];
+  for(const item of subitems) {
     const cols = {};
-    for (const cv of item.column_values) cols[cv.id] = cv;
-
+    for(const cv of item.column_values) cols[cv.id]=cv;
     // Check milestone checkbox
-    const checkCol = cols['boolean_mm00qyep'];
-    if (!checkCol) continue;
-    let isChecked = false;
+    const cc = cols['boolean_mm00qyep'];
+    if(!cc) continue;
+    let checked=false;
     try {
-      const v = checkCol.value;
-      if (v === '"v"' || v === 'v') isChecked = true;
-      else {
-        const parsed = JSON.parse(v);
-        isChecked = parsed === true || parsed === 'true' || parsed?.checked === true;
-      }
-    } catch { isChecked = checkCol.text === 'v'; }
-    if (!isChecked) continue;
-
-    // Parse date range
-    const timeCol = cols['timerange_mm00qh4t'];
-    if (!timeCol || !timeCol.text) continue;
-    const range = parseRange(timeCol.text);
-    if (!range || !overlaps(range)) continue;
-
-    // Person
-    const personCol = cols['person'];
-    const person = personCol ? (personCol.text || '') : '';
-
-    // Client info — from dynamic map, never static
-    const info = subitemMap[item.id] || { client: '—', deliverable: '—', lead: '—', color: '#888780' };
-
-    milestones.push({
-      id: item.id,
-      name: item.name.replace(/^MILESTONE:\s*/i, '').replace(/^MILESTONE MTG:\s*/i, '').replace(/^MEETING:\s*/i, ''),
-      url: item.url,
-      range,
-      startStr: range.startStr,
-      endStr: range.endStr,
-      person,
+      const v=cc.value;
+      if(v==='"v"'||v==='v') checked=true;
+      else { const p=JSON.parse(v); checked=p===true||p==='true'||p?.checked===true; }
+    } catch { checked=cc.text==='v'; }
+    if(!checked) continue;
+    // Check date in window
+    const tc = cols['timerange_mm00qh4t'];
+    if(!tc||!tc.text) continue;
+    const range = parseRange(tc.text);
+    if(!range||!overlaps(range)) continue;
+    // Build milestone object
+    const info = subitemMap[item.id] || {client:'—',deliverable:'—',lead:'—',color:'#888780'};
+    out.push({
+      id:item.id,
+      name:item.name.replace(/^(MILESTONE MTG|MILESTONE|MEETING):\s*/i,''),
+      url:item.url, range,
+      startStr:range.startStr, endStr:range.endStr,
+      person:cols['person']?.text||'',
       ...info,
     });
   }
-
-  return milestones.sort((a, b) => a.range.start - b.range.start);
+  return out.sort((a,b)=>a.range.start-b.range.start);
 }
 
-
-// ── Render ────────────────────────────────────────────────────────────────
-let currentFilter = 'All';
-let currentMilestones = [];
+// ── RENDER ────────────────────────────────────────────────────────────────
+let currentFilter='All', currentMilestones=[];
 
 function renderTokenGate() {
-  const saved = localStorage.getItem(STORAGE_KEY) || '';
+  const saved = localStorage.getItem(STORAGE_KEY)||'';
   document.getElementById('main-content').innerHTML = `
     <div class="token-gate">
       <h2>Connect to Monday.com</h2>
-      <p>Paste your Monday.com API token to pull live milestones. It's saved in your browser only — never sent anywhere except Monday's API.</p>
+      <p>Paste your Monday.com API token. Saved in your browser only — never sent anywhere except Monday's API.</p>
       <input id="token-input" class="token-input" type="password"
-        placeholder="eyJhbGciOiJIUzI1NiJ9…"
-        value="${saved}" autocomplete="off" />
+        placeholder="eyJhbGciOiJIUzI1NiJ9…" value="${saved}" autocomplete="off">
       <button class="token-submit" onclick="handleTokenSubmit()">Load Milestones →</button>
-      <p class="token-hint">
-        Get your token at <a href="https://monday.com/developers/v2/try-it-yourself" target="_blank">monday.com/developers</a> → Profile → Developers → API token.
-      </p>
-    </div>
-  `;
-  document.getElementById('token-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') handleTokenSubmit();
-  });
+      <p class="token-hint">Get your token at <a href="https://monday.com/developers/v2/try-it-yourself" target="_blank">monday.com/developers</a> → Profile → Developers → API token.</p>
+    </div>`;
+  setTimeout(()=>{
+    const inp=document.getElementById('token-input');
+    if(inp) inp.addEventListener('keydown',e=>{if(e.key==='Enter')handleTokenSubmit();});
+  },0);
 }
 
 function handleTokenSubmit() {
-  const token = document.getElementById('token-input').value.trim();
-  if (!token) return;
-  localStorage.setItem(STORAGE_KEY, token);
+  const token=document.getElementById('token-input')?.value.trim();
+  if(!token) return;
+  localStorage.setItem(STORAGE_KEY,token);
   loadDashboard(token);
 }
 
 function renderLoading() {
-  document.getElementById('main-content').innerHTML = `
+  document.getElementById('main-content').innerHTML=`
     <div class="state-container">
       <div class="state-spinner"></div>
       <div class="state-title">Pulling milestones from Monday.com</div>
-      <div class="state-sub">Reading all subitems across Active Projects…</div>
-    </div>
-  `;
+      <div class="state-sub">Reading Active Projects board…</div>
+    </div>`;
 }
 
 function renderError(msg) {
-  document.getElementById('main-content').innerHTML = `
+  document.getElementById('main-content').innerHTML=`
     <div class="state-container">
-      <div class="state-title" style="color: #8b2020">Couldn't load milestones</div>
+      <div class="state-title" style="color:#8b2020">Couldn't load milestones</div>
       <div class="state-sub" style="margin-bottom:20px">${msg}</div>
       <button class="token-submit" style="width:auto;padding:10px 24px" onclick="clearToken()">Re-enter token</button>
-    </div>
-  `;
+    </div>`;
 }
 
-function clearToken() {
-  localStorage.removeItem(STORAGE_KEY);
-  renderTokenGate();
-}
+function clearToken() { localStorage.removeItem(STORAGE_KEY); renderTokenGate(); }
 
 function renderDashboard(milestones) {
-  currentMilestones = milestones;
-  const leads = ['All', 'Will Jacott', 'James Diers', 'Jeremy Emmerich', 'Joa Koeneke'];
+  currentMilestones=milestones;
+  const leads=['All','Will Jacott','James Diers','Jeremy Emmerich','Joa Koeneke'];
+  const filtered=currentFilter==='All'?milestones:milestones.filter(m=>m.lead===currentFilter);
+  const sorted=[...filtered].sort((a,b)=>a.range.start-b.range.start);
+  const counts={}; BUCKET_ORDER.forEach(b=>counts[b]=0);
+  sorted.forEach(m=>counts[bucket(m)]++);
+  const grouped={}; sorted.forEach(m=>{const b=bucket(m);if(!grouped[b])grouped[b]=[];grouped[b].push(m);});
+  const clientCounts={}; sorted.forEach(m=>clientCounts[m.client]=(clientCounts[m.client]||0)+1);
+  const now=new Date();
+  document.getElementById('last-updated').textContent=
+    'Updated '+now.toLocaleDateString('en-US',{month:'short',day:'numeric'})+
+    ' · '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
 
-  const filtered = currentFilter === 'All'
-    ? milestones
-    : milestones.filter(m => m.lead === currentFilter || m.person.includes(currentFilter));
-
-  // Summary counts
-  const counts = {};
-  for (const b of BUCKET_ORDER) counts[b] = 0;
-  for (const m of filtered) counts[bucket(m)] = (counts[bucket(m)] || 0) + 1;
-
-  // Grouped
-  const grouped = {};
-  for (const m of filtered) {
-    const b = bucket(m);
-    if (!grouped[b]) grouped[b] = [];
-    grouped[b].push(m);
-  }
-
-  // Client legend
-  const clientCounts = {};
-  for (const m of filtered) clientCounts[m.client] = (clientCounts[m.client] || 0) + 1;
-
-  const now = new Date();
-  const updatedStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' · ' +
-    now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-  document.getElementById('last-updated').textContent = 'Updated ' + updatedStr;
-
-  let html = '';
+  let html='';
 
   // Filter bar
-  html += `<div class="controls">
-    <span class="controls-label">Lead</span>`;
-  for (const l of leads) {
-    const active = l === currentFilter ? 'active' : '';
-    html += `<button class="filter-btn ${active}" onclick="setFilter('${l}')">${l}</button>`;
-  }
-  html += `<button class="refresh-btn" id="refresh-btn" onclick="handleRefresh()">
-    <span class="refresh-icon">↻</span> Refresh
-  </button></div>`;
+  html+=`<div class="controls"><span class="controls-label">Lead</span>`;
+  leads.forEach(l=>{
+    const c=LEAD_COLORS[l]||'#1a1814';
+    const a=l===currentFilter;
+    html+=`<button class="filter-btn${a?' active':''}"
+      style="${a?'background:'+c+';border-color:'+c:''}"
+      onclick="setFilter('${l}')">${l}</button>`;
+  });
+  html+=`<button class="refresh-btn" id="refresh-btn" onclick="handleRefresh()">
+    <span class="spin">↻</span> Refresh</button></div>`;
 
   // Summary row
-  const summaryLabels = { 'overdue': 'Overdue', 'in-progress': 'In progress', 'this-week': 'This week', 'next-week': 'Next week', 'week-3': 'Week 3' };
-  html += `<div class="summary-row">`;
-  for (const b of BUCKET_ORDER) {
-    html += `<div class="summary-card ${b.replace('-','-')}">
-      <div class="summary-label">${summaryLabels[b]}</div>
-      <div class="summary-count">${counts[b] || 0}</div>
-    </div>`;
-  }
-  html += `</div>`;
+  html+=`<div class="summary-row">`;
+  BUCKET_ORDER.forEach(b=>{
+    const cls=b==='overdue'?' overdue':b==='in-progress'?' in-progress':'';
+    html+=`<div class="summary-card${cls}"><div class="summary-label">${BUCKET_LABELS[b]}</div><div class="summary-count">${counts[b]}</div></div>`;
+  });
+  html+=`</div>`;
 
-  if (filtered.length === 0) {
-    html += `<div class="state-container"><div class="state-title">No milestones</div><div class="state-sub">No milestones in this window for the selected filter.</div></div>`;
-  }
+  if(!sorted.length) html+=`<div class="state-container"><div class="state-title">No milestones</div><div class="state-sub">Nothing in this window for the selected lead.</div></div>`;
 
   // Sections
-  for (const b of BUCKET_ORDER) {
-    if (!grouped[b] || grouped[b].length === 0) continue;
-    const labelClass = b === 'overdue' ? 'overdue' : b === 'in-progress' ? 'in-progress' : '';
-    html += `<div class="milestone-section">
-      <div class="section-header">
-        <span class="section-label ${labelClass}">${BUCKET_LABELS[b]}</span>
-        <div class="section-divider"></div>
-        <span class="section-count">${grouped[b].length}</span>
-      </div>`;
-
-    for (const m of grouped[b]) {
-      const chip = statusChip(m);
-      html += `
-        <a class="milestone-card" href="${m.url}" target="_blank" rel="noopener">
-          <div class="milestone-accent" style="background:${m.color}"></div>
-          <div class="milestone-body">
-            <div class="milestone-name" title="${m.name}">${m.name}</div>
-            <div class="milestone-meta">
-              <span class="client-tag" style="background:${m.color}18;color:${m.color}">${m.client}</span>
-              <span class="meta-sep">·</span>
-              <span class="meta-text">${m.deliverable}</span>
-              <span class="meta-sep">·</span>
-              <span class="meta-text">Lead: ${m.lead}</span>
-            </div>
+  BUCKET_ORDER.forEach(b=>{
+    if(!grouped[b]?.length) return;
+    const lc=b==='overdue'?' overdue':b==='in-progress'?' in-progress':'';
+    html+=`<div class="milestone-section"><div class="section-header">
+      <span class="section-label${lc}">${BUCKET_LABELS[b]}</span>
+      <div class="section-divider"></div>
+      <span class="section-count">${grouped[b].length}</span></div>`;
+    grouped[b].forEach(m=>{
+      const chip=statusChip(m);
+      html+=`<a class="milestone-card" href="${m.url}" target="_blank" rel="noopener">
+        <div class="milestone-accent" style="background:${m.color}"></div>
+        <div class="milestone-body">
+          <div class="milestone-name" title="${m.name}">${m.name}</div>
+          <div class="milestone-meta">
+            <span class="client-tag" style="background:${m.color}18;color:${m.color}">${m.client}</span>
+            <span class="meta-sep">·</span>
+            <span class="meta-text">${m.deliverable}</span>
+            <span class="meta-sep">·</span>
+            <span class="meta-text">Lead: ${m.lead}</span>
           </div>
-          <div class="milestone-right">
-            <span class="date-label">${dateLabel(m)}</span>
-            <span class="status-chip" style="background:${chip.bg};color:${chip.tc}">
-              <span class="status-dot" style="background:${chip.dot}"></span>
-              ${chip.label}
-            </span>
-          </div>
-          <span class="ext-link" title="Open in Monday.com">↗</span>
-        </a>`;
-    }
-    html += `</div>`;
-  }
+        </div>
+        <div class="milestone-right">
+          <span class="date-label">${dateLabel(m)}</span>
+          <span class="status-chip" style="background:${chip.bg};color:${chip.tc}">
+            <span class="status-dot" style="background:${chip.dot}"></span>${chip.label}
+          </span>
+        </div>
+        <span class="ext-link">↗</span>
+      </a>`;
+    });
+    html+=`</div>`;
+  });
 
   // Legend
-  html += `<div class="legend">`;
-  for (const [client, count] of Object.entries(clientCounts)) {
-    const color = (milestones.find(m => m.client === client) || {}).color || '#888';
-    html += `<div class="legend-item">
-      <div class="legend-dot" style="background:${color}"></div>
-      <span class="legend-label">${client}</span>
-      <span class="legend-count">(${count})</span>
-    </div>`;
-  }
-  html += `<span class="legend-total">${filtered.length} milestone${filtered.length !== 1 ? 's' : ''} · May 13 – Jun 3</span>`;
-  html += `</div>`;
+  html+=`<div class="legend">`;
+  Object.entries(clientCounts).forEach(([client,count])=>{
+    const color=(milestones.find(m=>m.client===client)||{}).color||'#888';
+    html+=`<div class="legend-item"><div class="legend-dot" style="background:${color}"></div><span class="legend-label">${client} (${count})</span></div>`;
+  });
+  const winEnd=new Date(Date.now()+21*86400000);
+  html+=`<span class="legend-total">${sorted.length} milestones · ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})} – ${winEnd.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span></div>`;
 
-  document.getElementById('main-content').innerHTML = html;
+  document.getElementById('main-content').innerHTML=html;
 }
 
-function setFilter(f) {
-  currentFilter = f;
-  renderDashboard(currentMilestones);
-}
+function setFilter(f) { currentFilter=f; renderDashboard(currentMilestones); }
 
 async function handleRefresh() {
-  const token = localStorage.getItem(STORAGE_KEY);
-  if (!token) { clearToken(); return; }
-  const btn = document.getElementById('refresh-btn');
-  if (btn) { btn.classList.add('loading'); btn.disabled = true; }
+  const token=localStorage.getItem(STORAGE_KEY);
+  if(!token){clearToken();return;}
+  const btn=document.getElementById('refresh-btn');
+  if(btn){btn.classList.add('loading');btn.disabled=true;}
   try {
-    const items = await fetchAllMilestones(token);
-    const milestones = processItems(items);
-    renderDashboard(milestones);
-  } catch (e) {
-    renderError(e.message);
-  }
+    const [subitemMap,subitems]=await Promise.all([buildSubitemMap(token),fetchSubitems(token)]);
+    renderDashboard(processItems(subitems,subitemMap));
+  } catch(e) { renderError(e.message); }
 }
 
 async function loadDashboard(token) {
   renderLoading();
   try {
-    const items = await fetchAllMilestones(token);
-    const milestones = processItems(items);
-    renderDashboard(milestones);
-  } catch (e) {
-    if (e.message.includes('401') || e.message.includes('403') || e.message.toLowerCase().includes('auth')) {
-      localStorage.removeItem(STORAGE_KEY);
-      renderTokenGate();
-      setTimeout(() => {
-        const el = document.querySelector('.token-hint');
-        if (el) el.innerHTML = '<strong style="color:#8b2020">Token rejected.</strong> Double-check it and try again.<br>' + el.innerHTML;
-      }, 50);
-    } else {
-      renderError(e.message);
-    }
+    const [subitemMap,subitems]=await Promise.all([buildSubitemMap(token),fetchSubitems(token)]);
+    renderDashboard(processItems(subitems,subitemMap));
+  } catch(e) {
+    if(e.message.includes('401')||e.message.includes('403')||e.message.toLowerCase().includes('auth')) {
+      localStorage.removeItem(STORAGE_KEY); renderTokenGate();
+    } else { renderError(e.message); }
   }
 }
 
-// ── Boot ──────────────────────────────────────────────────────────────────
-(function init() {
-  const token = localStorage.getItem(STORAGE_KEY);
-  if (token) {
-    loadDashboard(token);
-  } else {
-    renderTokenGate();
-  }
-})();
+// Boot
+(function(){ const t=localStorage.getItem(STORAGE_KEY); if(t) loadDashboard(t); else renderTokenGate(); })();
 </script>
 </body>
 </html>
