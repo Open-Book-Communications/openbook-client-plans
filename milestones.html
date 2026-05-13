@@ -414,36 +414,28 @@
 
 <script>
 // ── Config ────────────────────────────────────────────────────────────────
+const PARENT_BOARD_ID  = '18397531209';
 const SUBITEM_BOARD_ID = '18397531210';
-const STORAGE_KEY = 'ob_monday_token';
+const STORAGE_KEY      = 'ob_monday_token';
 
-// Client/deliverable lookup by subitem ID
-// Last updated: May 13, 2026
-const CLIENT_MAP = {
-  // MN Land Trust — Visual Brand System + Guidelines — James Diers
-  '11304902732': { client: 'MN Land Trust', deliverable: 'Visual Brand System + Guidelines', lead: 'James Diers', color: '#1a6b4a' },
-  '11304904138': { client: 'MN Land Trust', deliverable: 'Visual Brand System + Guidelines', lead: 'James Diers', color: '#1a6b4a' },
-  '11304903447': { client: 'MN Land Trust', deliverable: 'Visual Brand System + Guidelines', lead: 'James Diers', color: '#1a6b4a' },
-  '11538384748': { client: 'MN Land Trust', deliverable: 'Visual Brand System + Guidelines', lead: 'James Diers', color: '#1a6b4a' },
-  '11304902880': { client: 'MN Land Trust', deliverable: 'Visual Brand System + Guidelines', lead: 'James Diers', color: '#1a6b4a' },
-  // MN Land Trust — Vision Video — James Diers
-  '11304944833': { client: 'MN Land Trust', deliverable: 'Vision Video',                    lead: 'James Diers', color: '#1a6b4a' },
-  '11304937550': { client: 'MN Land Trust', deliverable: 'Vision Video',                    lead: 'James Diers', color: '#1a6b4a' },
-  '11304945922': { client: 'MN Land Trust', deliverable: 'Vision Video',                    lead: 'James Diers', color: '#1a6b4a' },
-  // MN Land Trust — Gala Promo Video — James Diers
-  '11304903462': { client: 'MN Land Trust', deliverable: 'Gala: State of Wonder — Promo Video', lead: 'James Diers', color: '#1a6b4a' },
-  // Maranatha — Presentation Folder — Will Jacott
-  '11278187495': { client: 'Maranatha',     deliverable: 'Presentation Folder',             lead: 'Will Jacott',     color: '#4a3a8a' },
-  // CarterBaldwin — Website Phase 3 — Will Jacott
-  '11629852633': { client: 'CarterBaldwin', deliverable: 'Website Phase 3: Build + Launch', lead: 'Will Jacott',     color: '#1a4a7a' },
-  // CarterBaldwin — Summit Post Event Video — Will Jacott
-  '11278161298': { client: 'CarterBaldwin', deliverable: 'Summit — Post Event Video',        lead: 'Will Jacott',     color: '#1a4a7a' },
-  '11278155790': { client: 'CarterBaldwin', deliverable: 'Summit — Post Event Video',        lead: 'Will Jacott',     color: '#1a4a7a' },
-  // Stony Brook — Refreshed One-Sheet Profiles — Jeremy Emmerich
-  '11278179465': { client: 'Stony Brook',   deliverable: 'Refreshed One-Sheet Profiles',    lead: 'Jeremy Emmerich', color: '#2a6010' },
-  '11278177803': { client: 'Stony Brook',   deliverable: 'Refreshed One-Sheet Profiles',    lead: 'Jeremy Emmerich', color: '#2a6010' },
-  '11278186959': { client: 'Stony Brook',   deliverable: 'Refreshed One-Sheet Profiles',    lead: 'Jeremy Emmerich', color: '#2a6010' },
+// Group title → { lead, color }
+// Only needs updating when a new client group is added to the board.
+const GROUP_MAP = {
+  'CarterBaldwin':                  { lead: 'Will Jacott',     color: '#1a4a7a' },
+  'Dairyland':                      { lead: 'James Diers',     color: '#d85a30' },
+  'Holy Family':                    { lead: 'Will Jacott',     color: '#534ab7' },
+  'KeHE Cares':                     { lead: 'James Diers',     color: '#854f0b' },
+  'KeHE Cares 2026-27 Partnership': { lead: 'James Diers',     color: '#854f0b' },
+  'Maranatha':                      { lead: 'Will Jacott',     color: '#4a3a8a' },
+  'Maranatha Christian Academy':    { lead: 'Will Jacott',     color: '#4a3a8a' },
+  'Midtown 12 South':               { lead: 'Will Jacott',     color: '#639922' },
+  'MN Land Trust':                  { lead: 'James Diers',     color: '#1a6b4a' },
+  'Prevention Now':                 { lead: 'Joa Koeneke',     color: '#993556' },
+  'Riverbridge':                    { lead: 'Will Jacott',     color: '#3a5a9a' },
+  'Stony Brook':                    { lead: 'Jeremy Emmerich', color: '#2a6010' },
+  'Stony Brook School':             { lead: 'Jeremy Emmerich', color: '#2a6010' },
 };
+
 
 // Window: today → +21 days
 function getWindow() {
@@ -505,8 +497,88 @@ const BUCKET_LABELS = {
 };
 const BUCKET_ORDER = ['overdue','in-progress','this-week','next-week','week-3'];
 
+
 // ── Monday.com API ────────────────────────────────────────────────────────
-async function fetchAllMilestones(token) {
+
+async function apiCall(token, query, variables = {}) {
+  const resp = await fetch('https://api.monday.com/v2', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token,
+      'API-Version': '2024-01',
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+  if (!resp.ok) throw new Error('Monday.com API error: ' + resp.status);
+  const data = await resp.json();
+  if (data.errors) throw new Error(data.errors[0].message);
+  return data;
+}
+
+// Step 1: Fetch parent board to build subitem_id → { client, deliverable, lead, color }
+async function buildSubitemMap(token) {
+  const query = `
+    query ($boardId: ID!, $cursor: String) {
+      boards(ids: [$boardId]) {
+        items_page(limit: 100, cursor: $cursor) {
+          cursor
+          items {
+            id name
+            group { title }
+            subitems { id }
+          }
+        }
+      }
+    }
+  `;
+
+  const subitemMap = {}; // subitem_id → { client, deliverable, lead, color }
+  let cursor = null, page = 0;
+
+  while (page < 5) {  // parent board has ~130 items, 2 pages max
+    const data = await apiCall(token, query, { boardId: PARENT_BOARD_ID, cursor });
+    const { items_page } = data.data.boards[0];
+
+    for (const item of items_page.items) {
+      const groupTitle = item.group?.title || '';
+      // Match group title to GROUP_MAP — try exact, then partial
+      let groupInfo = GROUP_MAP[groupTitle];
+      if (!groupInfo) {
+        // Try partial match (e.g. "KeHE Cares 2026-27 Partnership" → "KeHE Cares")
+        for (const [key, val] of Object.entries(GROUP_MAP)) {
+          if (groupTitle.startsWith(key) || key.startsWith(groupTitle.split(' ')[0])) {
+            groupInfo = val;
+            break;
+          }
+        }
+      }
+      if (!groupInfo) groupInfo = { lead: '—', color: '#888780' };
+
+      const client = groupTitle
+        .replace(/\s*[-–—]\s*(Will Jacott|James Diers|Jeremy Emmerich|Joa Koeneke|Will|James|Jeremy|Joa).*$/i, '')
+        .trim();
+
+      for (const sub of item.subitems || []) {
+        subitemMap[sub.id] = {
+          client,
+          deliverable: item.name,
+          lead: groupInfo.lead,
+          color: groupInfo.color,
+        };
+      }
+    }
+
+    cursor = items_page.cursor;
+    page++;
+    if (!cursor) break;
+  }
+
+  return subitemMap;
+}
+
+// Step 2: Fetch all subitems with milestone checkbox + date columns
+async function fetchSubitems(token) {
   const query = `
     query ($boardId: ID!, $cursor: String) {
       boards(ids: [$boardId]) {
@@ -525,27 +597,11 @@ async function fetchAllMilestones(token) {
 
   let allItems = [], cursor = null, page = 0;
 
-  while (page < 12) {
-    const variables = { boardId: SUBITEM_BOARD_ID };
-    if (cursor) variables.cursor = cursor;
-
-    const resp = await fetch('https://api.monday.com/v2', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': token,
-        'API-Version': '2024-01',
-      },
-      body: JSON.stringify({ query, variables }),
-    });
-
-    if (!resp.ok) throw new Error('Monday.com API error: ' + resp.status);
-    const data = await resp.json();
-    if (data.errors) throw new Error(data.errors[0].message);
-
-    const page_data = data.data.boards[0].items_page;
-    allItems = allItems.concat(page_data.items);
-    cursor = page_data.cursor;
+  while (page < 15) {  // up to 1500 subitems
+    const data = await apiCall(token, query, { boardId: SUBITEM_BOARD_ID, cursor });
+    const { items_page } = data.data.boards[0];
+    allItems = allItems.concat(items_page.items);
+    cursor = items_page.cursor;
     page++;
     if (!cursor) break;
   }
@@ -553,10 +609,19 @@ async function fetchAllMilestones(token) {
   return allItems;
 }
 
-function processItems(items) {
+async function fetchAllMilestones(token) {
+  // Run both fetches in parallel
+  const [subitemMap, allSubitems] = await Promise.all([
+    buildSubitemMap(token),
+    fetchSubitems(token),
+  ]);
+  return { subitemMap, allSubitems };
+}
+
+function processItems({ subitemMap, allSubitems }) {
   const milestones = [];
 
-  for (const item of items) {
+  for (const item of allSubitems) {
     const cols = {};
     for (const cv of item.column_values) cols[cv.id] = cv;
 
@@ -584,8 +649,8 @@ function processItems(items) {
     const personCol = cols['person'];
     const person = personCol ? (personCol.text || '') : '';
 
-    // Client info
-    const info = CLIENT_MAP[item.id] || { client: '—', deliverable: '—', lead: '—', color: '#888780' };
+    // Client info — from dynamic map, never static
+    const info = subitemMap[item.id] || { client: '—', deliverable: '—', lead: '—', color: '#888780' };
 
     milestones.push({
       id: item.id,
@@ -601,6 +666,7 @@ function processItems(items) {
 
   return milestones.sort((a, b) => a.range.start - b.range.start);
 }
+
 
 // ── Render ────────────────────────────────────────────────────────────────
 let currentFilter = 'All';
