@@ -420,21 +420,6 @@ const STORAGE_KEY      = 'ob_monday_token';
 
 // Group title → { lead, color }
 // Only needs updating when a new client group is added to the board.
-const GROUP_MAP = {
-  'CarterBaldwin':                  { lead: 'Will Jacott',     color: '#1a4a7a' },
-  'Dairyland':                      { lead: 'James Diers',     color: '#d85a30' },
-  'Holy Family':                    { lead: 'Will Jacott',     color: '#534ab7' },
-  'KeHE Cares':                     { lead: 'James Diers',     color: '#854f0b' },
-  'KeHE Cares 2026-27 Partnership': { lead: 'James Diers',     color: '#854f0b' },
-  'Maranatha':                      { lead: 'Will Jacott',     color: '#4a3a8a' },
-  'Maranatha Christian Academy':    { lead: 'Will Jacott',     color: '#4a3a8a' },
-  'Midtown 12 South':               { lead: 'Will Jacott',     color: '#639922' },
-  'MN Land Trust':                  { lead: 'James Diers',     color: '#1a6b4a' },
-  'Prevention Now':                 { lead: 'Joa Koeneke',     color: '#993556' },
-  'Riverbridge':                    { lead: 'Will Jacott',     color: '#3a5a9a' },
-  'Stony Brook':                    { lead: 'Jeremy Emmerich', color: '#2a6010' },
-  'Stony Brook School':             { lead: 'Jeremy Emmerich', color: '#2a6010' },
-};
 
 
 // Window: today → +21 days
@@ -533,38 +518,49 @@ async function buildSubitemMap(token) {
     }
   `;
 
-  const subitemMap = {}; // subitem_id → { client, deliverable, lead, color }
+  // Extract client name and lead from group title like "CarterBaldwin - Will"
+  // The group title format is always "Client Name - Lead First Name"
+  function parseGroup(groupTitle) {
+    const LEAD_COLORS = {
+      'Will Jacott':     '#1a4a7a',
+      'James Diers':     '#1a6b4a',
+      'Jeremy Emmerich': '#2a6010',
+      'Joa Koeneke':     '#993556',
+    };
+    const LEAD_NAMES = {
+      'Will':    'Will Jacott',
+      'James':   'James Diers',
+      'Jeremy':  'Jeremy Emmerich',
+      'Joa':     'Joa Koeneke',
+    };
+
+    // Split on " - " to get client and lead shortname
+    const dashIdx = groupTitle.lastIndexOf(' - ');
+    if (dashIdx === -1) {
+      return { client: groupTitle, lead: '—', color: '#888780' };
+    }
+    const client = groupTitle.slice(0, dashIdx).trim();
+    const leadShort = groupTitle.slice(dashIdx + 3).trim();
+    const lead = LEAD_NAMES[leadShort] || leadShort;
+    const color = LEAD_COLORS[lead] || '#888780';
+    return { client, lead, color };
+  }
+
+  const subitemMap = {};
   let cursor = null, page = 0;
 
-  while (page < 5) {  // parent board has ~130 items, 2 pages max
+  while (page < 5) {
     const data = await apiCall(token, query, { boardId: PARENT_BOARD_ID, cursor });
     const { items_page } = data.data.boards[0];
 
     for (const item of items_page.items) {
-      const groupTitle = item.group?.title || '';
-      // Match group title to GROUP_MAP — try exact, then partial
-      let groupInfo = GROUP_MAP[groupTitle];
-      if (!groupInfo) {
-        // Try partial match (e.g. "KeHE Cares 2026-27 Partnership" → "KeHE Cares")
-        for (const [key, val] of Object.entries(GROUP_MAP)) {
-          if (groupTitle.startsWith(key) || key.startsWith(groupTitle.split(' ')[0])) {
-            groupInfo = val;
-            break;
-          }
-        }
-      }
-      if (!groupInfo) groupInfo = { lead: '—', color: '#888780' };
-
-      const client = groupTitle
-        .replace(/\s*[-–—]\s*(Will Jacott|James Diers|Jeremy Emmerich|Joa Koeneke|Will|James|Jeremy|Joa).*$/i, '')
-        .trim();
-
+      const { client, lead, color } = parseGroup(item.group?.title || '');
       for (const sub of item.subitems || []) {
         subitemMap[sub.id] = {
           client,
           deliverable: item.name,
-          lead: groupInfo.lead,
-          color: groupInfo.color,
+          lead,
+          color,
         };
       }
     }
