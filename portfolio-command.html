@@ -82,8 +82,36 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .section-body.collapsed { display: none; }
 
 /* Project rows */
-.proj { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 14px 18px; margin-bottom: 6px; display: grid; grid-template-columns: 10px 1fr auto auto auto; gap: 18px; align-items: center; text-decoration: none; color: inherit; transition: border-color 0.12s, box-shadow 0.12s; }
+.proj-wrap { margin-bottom: 6px; }
+.proj { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 14px 18px; display: grid; grid-template-columns: 10px 1fr auto auto auto 22px; gap: 18px; align-items: center; transition: border-color 0.12s, box-shadow 0.12s; cursor: pointer; }
 .proj:hover { border-color: var(--muted); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.proj-wrap.expanded .proj { border-radius: 10px 10px 0 0; border-bottom-color: var(--border); }
+.proj-expand { font-size: 13px; color: var(--muted); text-align: center; transition: transform 0.15s; }
+.proj-wrap.expanded .proj-expand { transform: rotate(90deg); color: var(--text); }
+.proj-name-link { color: inherit; text-decoration: none; }
+.proj-name-link:hover { text-decoration: underline; }
+.proj-badge { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: var(--grey-soft); color: var(--grey); margin-left: 6px; letter-spacing: 0.04em; text-transform: uppercase; }
+
+.subs { background: var(--bg); border: 1px solid var(--border); border-top: none; border-radius: 0 0 10px 10px; padding: 10px 14px 12px; }
+.subs-head { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 6px 4px; }
+.sub-row { display: grid; grid-template-columns: 8px 1fr auto auto; gap: 14px; align-items: center; padding: 8px 4px; border-top: 1px solid var(--border); font-size: 12.5px; }
+.sub-row:first-of-type { border-top: none; }
+.sub-dot { width: 6px; height: 6px; border-radius: 50%; }
+.sub-row.green .sub-dot { background: var(--green); }
+.sub-row.amber .sub-dot { background: var(--amber); }
+.sub-row.red   .sub-dot { background: var(--red); }
+.sub-row.done  .sub-dot { background: var(--done); }
+.sub-row.grey  .sub-dot { background: var(--grey); }
+.sub-name { color: var(--text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sub-pct { font-weight: 600; font-variant-numeric: tabular-nums; }
+.sub-row.green .sub-pct { color: var(--green); }
+.sub-row.amber .sub-pct { color: var(--amber); }
+.sub-row.red   .sub-pct { color: var(--red); }
+.sub-row.done  .sub-pct { color: var(--done); }
+.sub-money { font-size: 11px; color: var(--text-2); text-align: right; min-width: 130px; }
+.sub-money strong { color: var(--text); font-weight: 600; }
+.sub-money.over strong { color: var(--red); }
+.subs-empty { font-size: 12px; color: var(--muted); padding: 8px 4px; }
 .proj-dot { width: 8px; height: 8px; border-radius: 50%; align-self: center; }
 .proj.green .proj-dot { background: var(--green); }
 .proj.amber .proj-dot { background: var(--amber); }
@@ -111,8 +139,10 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   .main { padding: 20px 14px 48px; }
   .hero-num { font-size: 48px; }
   .stats { grid-template-columns: repeat(2, 1fr); }
-  .proj { grid-template-columns: 8px 1fr auto; row-gap: 6px; }
-  .proj-drift, .proj-budget { grid-column: 2 / 4; text-align: left; min-width: 0; }
+  .proj { grid-template-columns: 8px 1fr auto 22px; row-gap: 6px; }
+  .proj-drift, .proj-budget { grid-column: 2 / 5; text-align: left; min-width: 0; }
+  .sub-row { grid-template-columns: 8px 1fr auto; }
+  .sub-money { grid-column: 2 / 4; text-align: left; min-width: 0; }
 }
 
 /* Refresh / toolbar */
@@ -154,11 +184,14 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 
 <script>
 // ── CONFIG ───────────────────────────────────────────────────────────────
-const BOARD_ID         = '18397542356';   // Budget Forecast Board
-const ACTIVE_GROUP_ID  = 'topics';
-const CLOSED_GROUP_ID  = 'group_mm25j958';
-const STORAGE_KEY      = 'ob_monday_token';
-const TARGET_MARGIN    = 65;              // Portfolio aggregate target
+const BUDGET_BOARD_ID   = '18397542356';   // Budget Forecast Board (sold/plan/burn margins)
+const TIMELY_BOARD_ID   = '18413069222';   // Timely Sync Board (live spend, manual health)
+const TIMELY_SUBITEMS   = '18413069226';   // Timely Sync subitems (per-deliverable health)
+const ACTIVE_GROUP_ID   = 'topics';
+const CLOSED_GROUP_ID   = 'group_mm25j958';
+const TIMELY_CLOSED_ID  = 'group_mm3b1mqh';
+const STORAGE_KEY       = 'ob_monday_token';
+const TARGET_MARGIN     = 65;              // Portfolio aggregate target
 
 // Tripwires: drift from sold margin (in percentage points)
 const DRIFT_YELLOW = 5;   // 5–10pp below sold → watch
@@ -166,6 +199,7 @@ const DRIFT_RED    = 10;  // >10pp below sold  → needs attention
 
 // Column IDs
 const COL = {
+  // Budget Forecast (parent)
   health:       'color_mm01dd05',
   soldMargin:   'numeric_mm3g9g4f',
   planMargin:   'numeric_mm2eqtbd',
@@ -173,6 +207,17 @@ const COL = {
   totalBudget:  'numeric_mm01fpy9',
   spend:        'numeric_mm01p0yd',
   pctComplete:  'numeric_mm1qybw0',
+  // Timely Sync (parent)
+  tmHealth:     'color_mm01dd05',
+  tmBudget:     'numeric_mm01fpy9',
+  tmSpend:      'numeric_mm01p0yd',
+  tmOverBy:     'numeric_mm3b5bf7',
+  // Timely Sync (subitems)
+  subHealth:    'color_mm3bgw2v',
+  subBudget:    'numeric_mm3aab02',
+  subSpent:     'numeric_mm3a5nfj',
+  subPctUsed:   'formula_mm3anrq7',
+  subHours:     'numeric_mm3a76ma',
 };
 
 // ── MONDAY API ───────────────────────────────────────────────────────────
@@ -188,8 +233,8 @@ async function apiCall(token, query, variables = {}) {
   return d;
 }
 
-async function fetchProjects(token) {
-  const colIds = JSON.stringify(Object.values(COL));
+async function fetchBoardItems(token, boardId, columnIds) {
+  const colIds = JSON.stringify(columnIds);
   const query = `query($boardId:ID!,$cursor:String){
     boards(ids:[$boardId]){
       items_page(limit:100,cursor:$cursor){
@@ -202,7 +247,7 @@ async function fetchProjects(token) {
   }`;
   let all = [], cursor = null, page = 0;
   while (page < 5) {
-    const data = await apiCall(token, query, { boardId: BOARD_ID, cursor });
+    const data = await apiCall(token, query, { boardId, cursor });
     const ip = data.data.boards[0].items_page;
     all = all.concat(ip.items);
     cursor = ip.cursor;
@@ -212,6 +257,37 @@ async function fetchProjects(token) {
   return all;
 }
 
+// Fetch subitems and group them by their parent item id.
+async function fetchSubitemsByParent(token, boardId, columnIds) {
+  const colIds = JSON.stringify(columnIds);
+  // The subitems board has a hidden 'parent_item' column on every row, but we
+  // can get the linkage cleanly by querying the parent board's items + subitems.
+  const query = `query($boardId:ID!,$cursor:String){
+    boards(ids:[$boardId]){
+      items_page(limit:100,cursor:$cursor){
+        cursor
+        items{ id name
+          subitems{ id name
+            column_values(ids:${colIds}){ id text value }
+          }
+        }
+      }
+    }
+  }`;
+  let map = {}, cursor = null, page = 0;
+  while (page < 5) {
+    const data = await apiCall(token, query, { boardId, cursor });
+    const ip = data.data.boards[0].items_page;
+    for (const item of ip.items) {
+      map[item.id] = item.subitems || [];
+    }
+    cursor = ip.cursor;
+    page++;
+    if (!cursor) break;
+  }
+  return map;
+}
+
 // ── PROCESSING ───────────────────────────────────────────────────────────
 function num(cv) {
   if (!cv || cv.text === null || cv.text === undefined || cv.text === '') return null;
@@ -219,36 +295,89 @@ function num(cv) {
   return isNaN(n) ? null : n;
 }
 
-function processProject(item) {
+// Normalize a project name for matching across boards
+function normName(name) {
+  return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function processBudgetItem(item) {
   const c = {};
   for (const cv of item.column_values) c[cv.id] = cv;
   const sold   = num(c[COL.soldMargin]);
   const plan   = num(c[COL.planMargin]);
   const burn   = num(c[COL.burnMargin]);
-  // Current margin = the worse of plan/burn (the math stays behind the scenes)
   let current = null;
   if (plan !== null && burn !== null) current = Math.min(plan, burn);
   else if (plan !== null) current = plan;
   else if (burn !== null) current = burn;
+  return {
+    id: item.id, name: item.name, url: item.url, group: item.group?.id,
+    sold, current,
+    budget: num(c[COL.totalBudget]),
+    spend:  num(c[COL.spend]),
+    pctDone: num(c[COL.pctComplete]),
+    health: c[COL.health]?.text || '',
+  };
+}
 
-  const budget = num(c[COL.totalBudget]);
-  const spend  = num(c[COL.spend]);
+function processTimelyItem(item) {
+  const c = {};
+  for (const cv of item.column_values) c[cv.id] = cv;
+  return {
+    id: item.id, name: item.name, url: item.url, group: item.group?.id,
+    health: c[COL.tmHealth]?.text || '',
+    budget: num(c[COL.tmBudget]),
+    spend:  num(c[COL.tmSpend]),
+    overBy: num(c[COL.tmOverBy]),
+  };
+}
+
+function processSubitem(sub) {
+  const c = {};
+  for (const cv of sub.column_values) c[cv.id] = cv;
+  const budget = num(c[COL.subBudget]);
+  const spent  = num(c[COL.subSpent]);
+  // Compute % used directly — formula columns don't always return text.
+  const pctUsed = (budget !== null && budget > 0 && spent !== null) ? (spent / budget * 100) : null;
+  return {
+    id: sub.id, name: sub.name,
+    health: c[COL.subHealth]?.text || '',
+    budget, spent,
+    remaining: (budget !== null && spent !== null) ? (budget - spent) : null,
+    pctUsed,
+    hours:   num(c[COL.subHours]),
+  };
+}
+
+// Merge a Budget Forecast row + matching Timely row (by normalized name)
+// into a single project record used by the dashboard.
+function mergeProject(bf, tm, subs) {
+  const name = bf?.name || tm?.name || '';
+  const url  = bf?.url || tm?.url || '#';
+  const id   = bf?.id  || tm?.id;
+  const group = bf?.group || tm?.group;
+
+  const sold   = bf?.sold ?? null;
+  const current = bf?.current ?? null;
+  const pctDone = bf?.pctDone ?? null;
+
+  // Prefer Timely's live spend/budget if available — it's the live sync.
+  // Fall back to Budget Forecast values.
+  const budget = tm?.budget ?? bf?.budget ?? null;
+  const spend  = tm?.spend  ?? bf?.spend  ?? null;
   const remaining = (budget !== null && spend !== null) ? (budget - spend) : null;
-  const pctSpent = (budget && budget > 0 && spend !== null) ? (spend / budget * 100) : null;
-  const pctDone = num(c[COL.pctComplete]);
+  const pctSpent  = (budget && budget > 0 && spend !== null) ? (spend / budget * 100) : null;
   const overBudget = remaining !== null && remaining < 0;
 
-  // Drift = how many points below sold the current margin is. Positive = below sold (bad).
   const drift = (sold !== null && current !== null) ? (sold - current) : null;
 
-  // Project is "pending" (not yet assessable) if we don't have enough data:
-  // no sold anchor, no current margin, or barely started (<10% done).
-  const pending = sold === null || current === null || (pctDone !== null && pctDone < 10);
+  // Pending if: no Budget Forecast row at all (Timely-only), OR no sold anchor,
+  // OR no current margin, OR barely started (<10% done).
+  const pending = !bf
+    || sold === null
+    || current === null
+    || (pctDone !== null && pctDone < 10);
 
-  // Status (only if not pending):
-  // - Red    if over budget OR drift > DRIFT_RED below sold
-  // - Amber  if drift > DRIFT_YELLOW below sold
-  // - Green  otherwise (holding or above sold)
   let status;
   if (pending) status = 'pending';
   else if (overBudget) status = 'red';
@@ -257,13 +386,14 @@ function processProject(item) {
   else status = 'green';
 
   return {
-    id: item.id,
-    name: item.name,
-    url: item.url,
-    group: item.group?.id,
-    sold, current, drift,
-    budget, spend, remaining, pctSpent, pctDone,
+    id, name, url, group,
+    sold, current, drift, pctDone,
+    budget, spend, remaining, pctSpent,
     overBudget, status, pending,
+    manualHealth: tm?.health || bf?.health || '',
+    hasBudgetForecast: !!bf,
+    hasTimely: !!tm,
+    subitems: subs || [],
   };
 }
 
@@ -394,6 +524,34 @@ function driftLabel(drift, overBudget) {
   return `−${drift.toFixed(0)}pp`;
 }
 
+function subitemStatusClass(label) {
+  if (!label) return 'grey';
+  if (label.includes('🔴') || /over/i.test(label)) return 'red';
+  if (label.includes('🟡') || /watch/i.test(label)) return 'amber';
+  if (label.includes('🟢') || /^ok|on track/i.test(label)) return 'green';
+  if (label.includes('✅') || /complete/i.test(label)) return 'done';
+  return 'grey';
+}
+
+function renderSubitem(s) {
+  const cls = subitemStatusClass(s.health);
+  const pctStr = s.pctUsed !== null ? `${Math.round(s.pctUsed)}%` : '—';
+  const over = s.remaining !== null && s.remaining < 0;
+  const moneyClass = over ? 'sub-money over' : 'sub-money';
+  const moneyStr = s.budget === null
+    ? '—'
+    : over
+      ? `Over by <strong>${fmtMoney(-s.remaining)}</strong> · ${fmtMoney(s.budget)} budget`
+      : `<strong>${fmtMoney(s.remaining ?? 0)}</strong> of ${fmtMoney(s.budget)} left`;
+  return `
+    <div class="sub-row ${cls}">
+      <span class="sub-dot"></span>
+      <span class="sub-name">${escape(s.name)}</span>
+      <span class="sub-pct">${pctStr}</span>
+      <span class="${moneyClass}">${moneyStr}</span>
+    </div>`;
+}
+
 function renderProjectRow(p, opts = {}) {
   const cls = opts.cls || p.status;
   const url = p.url || '#';
@@ -402,21 +560,52 @@ function renderProjectRow(p, opts = {}) {
     : (p.overBudget ? `Over by <strong>${fmtMoney(-p.remaining)}</strong>` : `<strong>${fmtMoney(p.remaining)}</strong> left`);
   const budgetClass = p.overBudget ? 'proj-budget over' : 'proj-budget';
   const doneStr = p.pctDone !== null ? ` · ${Math.round(p.pctDone)}% done` : '';
-  const soldStr = p.sold !== null ? `vs ${Math.round(p.sold)}% sold` : (p.pending ? 'no sold margin set' : '');
+  const soldStr = p.sold !== null ? `vs ${Math.round(p.sold)}% sold` : (p.pending ? 'no sold margin' : '');
   const marginStr = p.current !== null ? fmtPct(p.current, 0) : '—';
   const drift = driftLabel(p.drift, p.overBudget);
   const driftChip = drift ? `<span class="proj-drift">${drift}</span>` : `<span></span>`;
+  const tmOnly = !p.hasBudgetForecast && p.hasTimely;
+  const trackBadge = tmOnly ? `<span class="proj-badge">Timely only</span>` : '';
+  const hasSubs = p.subitems && p.subitems.length > 0;
+  const expandIcon = hasSubs ? '▸' : '';
+  const linkHref = url !== '#' ? url : null;
+  const subsHtml = hasSubs
+    ? `<div class="subs">
+         <div class="subs-head">Deliverables (${p.subitems.length})</div>
+         ${p.subitems.map(renderSubitem).join('')}
+       </div>`
+    : '';
+
+  // The name is a separate link so clicking the name opens Monday,
+  // but clicking elsewhere on the row toggles expansion.
+  const nameHtml = linkHref
+    ? `<a class="proj-name-link" href="${linkHref}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escape(p.name)}</a>${trackBadge}`
+    : `${escape(p.name)}${trackBadge}`;
+
   return `
-    <a class="proj ${cls}" href="${url}" target="_blank" rel="noopener">
-      <span class="proj-dot"></span>
-      <span class="proj-name">${escape(p.name)}</span>
-      <span class="proj-margin">
-        <span class="proj-margin-num">${marginStr}</span>
-        <span class="proj-margin-vs">${soldStr}</span>
-      </span>
-      ${driftChip}
-      <span class="${budgetClass}">${remainStr}${doneStr}</span>
-    </a>`;
+    <div class="proj-wrap" data-id="${p.id}">
+      <div class="proj ${cls}" onclick="toggleProject(this)">
+        <span class="proj-dot"></span>
+        <span class="proj-name">${nameHtml}</span>
+        <span class="proj-margin">
+          <span class="proj-margin-num">${marginStr}</span>
+          <span class="proj-margin-vs">${soldStr}</span>
+        </span>
+        ${driftChip}
+        <span class="${budgetClass}">${remainStr}${doneStr}</span>
+        <span class="proj-expand">${expandIcon}</span>
+      </div>
+      ${subsHtml ? `<div class="proj-sub-container" style="display:none">${subsHtml}</div>` : ''}
+    </div>`;
+}
+
+function toggleProject(el) {
+  const wrap = el.closest('.proj-wrap');
+  if (!wrap) return;
+  const container = wrap.querySelector('.proj-sub-container');
+  if (!container) return;  // no subitems
+  const expanded = wrap.classList.toggle('expanded');
+  container.style.display = expanded ? 'block' : 'none';
 }
 
 function section(id, title, titleClass, projects, collapsed = false) {
@@ -443,8 +632,11 @@ function toggleSection(id) {
 }
 
 function renderDashboard(projects) {
-  const active = projects.filter(p => p.group === ACTIVE_GROUP_ID);
-  const closed = projects.filter(p => p.group === CLOSED_GROUP_ID);
+  // Active: anything in either board's Active group
+  const isActive = g => g === ACTIVE_GROUP_ID;
+  const isClosed = g => g === CLOSED_GROUP_ID || g === TIMELY_CLOSED_ID;
+  const active = projects.filter(p => isActive(p.group));
+  const closed = projects.filter(p => isClosed(p.group));
 
   // Sort: worst (highest drift) first within each bucket
   const byDrift = (a, b) => (b.drift ?? -Infinity) - (a.drift ?? -Infinity);
@@ -485,9 +677,51 @@ function renderDashboard(projects) {
 async function loadDashboard(token) {
   renderLoading();
   try {
-    const items = await fetchProjects(token);
-    const projects = items.map(processProject);
-    renderDashboard(projects);
+    const budgetCols = [COL.health, COL.soldMargin, COL.planMargin, COL.burnMargin,
+                        COL.totalBudget, COL.spend, COL.pctComplete];
+    const timelyCols = [COL.tmHealth, COL.tmBudget, COL.tmSpend, COL.tmOverBy];
+    const subCols    = [COL.subHealth, COL.subBudget, COL.subSpent, COL.subPctUsed, COL.subHours];
+
+    const [budgetItems, timelyItems, subitemsByParent] = await Promise.all([
+      fetchBoardItems(token, BUDGET_BOARD_ID, budgetCols),
+      fetchBoardItems(token, TIMELY_BOARD_ID, timelyCols),
+      fetchSubitemsByParent(token, TIMELY_BOARD_ID, subCols),
+    ]);
+
+    // Process raw rows
+    const bfRows = budgetItems.map(processBudgetItem);
+    const tmRows = timelyItems.map(processTimelyItem);
+
+    // Index Timely rows by normalized name (active + closed both)
+    const tmByName = {};
+    for (const tm of tmRows) tmByName[normName(tm.name)] = tm;
+
+    // Build subitem lookup by Timely parent id, processed
+    const subsByTmId = {};
+    for (const [parentId, subs] of Object.entries(subitemsByParent)) {
+      subsByTmId[parentId] = subs.map(processSubitem);
+    }
+
+    // Track which Timely rows got matched so we can surface unmatched ones
+    const matchedTmIds = new Set();
+    const merged = [];
+
+    for (const bf of bfRows) {
+      const tm = tmByName[normName(bf.name)] || null;
+      if (tm) matchedTmIds.add(tm.id);
+      const subs = tm ? (subsByTmId[tm.id] || []) : [];
+      merged.push(mergeProject(bf, tm, subs));
+    }
+
+    // Timely-only rows (active group) — projects tracked in Timely but not budgeted yet
+    for (const tm of tmRows) {
+      if (matchedTmIds.has(tm.id)) continue;
+      if (tm.group !== ACTIVE_GROUP_ID) continue;
+      const subs = subsByTmId[tm.id] || [];
+      merged.push(mergeProject(null, tm, subs));
+    }
+
+    renderDashboard(merged);
   } catch (e) {
     renderError(e.message || String(e));
   }
