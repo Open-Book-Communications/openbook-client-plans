@@ -11,123 +11,139 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f7f5f0; --surface: #fff; --border: #e8e3d8;
-  --text-primary: #1a1814; --text-secondary: #6b6560; --text-muted: #a09890;
-  --accent: #2a5c45; --accent-light: #eaf2ec;
-  --green: #2a8a5a; --green-bg: #eaf4ee; --green-border: #c6e2d0;
-  --yellow: #c4860a; --yellow-bg: #fbf4e3; --yellow-border: #ecd9a4;
-  --red: #b8253b; --red-bg: #fbe9ec; --red-border: #efc5cd;
-  --done: #1a5e3e; --done-bg: #e3ede6; --done-border: #b8d1bf;
-  --grey: #888780; --grey-bg: #f0ede6; --grey-border: #ddd6c6;
+  --bg: #f5f3ee; --surface: #fff; --border: #e6e1d4;
+  --text: #1a1814; --text-2: #5e5852; --muted: #9a9288;
+  --accent: #2a5c45;
+  --green: #2a8a5a; --green-soft: #e7f1ea;
+  --amber: #c4860a; --amber-soft: #f8efd9;
+  --red: #b8253b;   --red-soft: #fbe6ea;
+  --done: #1a5e3e;  --done-soft: #e0eae4;
+  --grey: #7d766f;  --grey-soft: #ede9e0;
+  --target-pct: 65;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; }
-.header { background: var(--text-primary); padding: 24px 40px; display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-.logo { font-family: 'DM Serif Display', serif; font-size: 22px; color: #fff; letter-spacing: -0.02em; }
-.logo span { color: #8fba9f; }
-.page-title { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.5); letter-spacing: 0.08em; text-transform: uppercase; border-left: 1px solid rgba(255,255,255,0.15); padding-left: 16px; }
-.header-meta { font-size: 12px; color: rgba(255,255,255,0.55); }
-.main { max-width: 1280px; margin: 0 auto; padding: 32px 24px 64px; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
-.refresh-btn { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 6px 16px; border-radius: 6px; border: 1px solid var(--accent); background: var(--accent-light); color: var(--accent); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s; }
+.header { background: var(--text); padding: 22px 36px; display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.logo { font-family: 'DM Serif Display', serif; font-size: 21px; color: #fff; letter-spacing: -0.02em; }
+.logo span { color: #8fba9f; }
+.page-title { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.5); letter-spacing: 0.1em; text-transform: uppercase; border-left: 1px solid rgba(255,255,255,0.15); padding-left: 14px; }
+.header-meta { font-size: 12px; color: rgba(255,255,255,0.55); }
+
+.main { max-width: 1080px; margin: 0 auto; padding: 32px 24px 64px; }
+
+/* Portfolio hero */
+.hero { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px 32px; margin-bottom: 18px; }
+.hero-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 14px; }
+.hero-num { font-family: 'DM Serif Display', serif; font-size: 64px; line-height: 0.9; }
+.hero-num.green { color: var(--green); }
+.hero-num.amber { color: var(--amber); }
+.hero-num.red   { color: var(--red); }
+.hero-label { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.hero-target { font-size: 13px; color: var(--text-2); }
+.hero-target strong { color: var(--text); font-weight: 600; }
+.hero-bar { height: 10px; background: var(--bg); border-radius: 100px; overflow: hidden; position: relative; }
+.hero-bar-fill { height: 100%; border-radius: 100px; transition: width 0.4s; }
+.hero-bar-fill.green { background: var(--green); }
+.hero-bar-fill.amber { background: var(--amber); }
+.hero-bar-fill.red   { background: var(--red); }
+.hero-bar-target { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text); }
+.hero-bar-target::after { content: '65%'; position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--text); font-weight: 600; white-space: nowrap; }
+.hero-foot { display: flex; gap: 24px; flex-wrap: wrap; font-size: 13px; color: var(--text-2); margin-top: 16px; }
+.hero-foot strong { color: var(--text); font-weight: 600; }
+
+/* Stat strip */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 32px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; }
+.stat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.stat.green  .stat-dot { background: var(--green); }
+.stat.amber  .stat-dot { background: var(--amber); }
+.stat.red    .stat-dot { background: var(--red); }
+.stat.over   .stat-dot { background: var(--red); box-shadow: 0 0 0 4px var(--red-soft); }
+.stat-body { flex: 1; min-width: 0; }
+.stat-num { font-family: 'DM Serif Display', serif; font-size: 26px; line-height: 1; }
+.stat.green .stat-num  { color: var(--green); }
+.stat.amber .stat-num  { color: var(--amber); }
+.stat.red   .stat-num,
+.stat.over  .stat-num  { color: var(--red); }
+.stat-label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4px; }
+
+/* Sections */
+.section { margin-bottom: 26px; }
+.section-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; cursor: pointer; user-select: none; }
+.section-head:hover .section-toggle { color: var(--text); }
+.section-title { font-family: 'DM Serif Display', serif; font-size: 22px; }
+.section-title.red   { color: var(--red); }
+.section-title.amber { color: var(--amber); }
+.section-title.green { color: var(--green); }
+.section-title.grey  { color: var(--grey); }
+.section-count { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; }
+.section-toggle { margin-left: auto; font-size: 12px; color: var(--muted); }
+.section-body.collapsed { display: none; }
+
+/* Project rows */
+.proj { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 14px 18px; margin-bottom: 6px; display: grid; grid-template-columns: 10px 1fr auto auto auto; gap: 18px; align-items: center; text-decoration: none; color: inherit; transition: border-color 0.12s, box-shadow 0.12s; }
+.proj:hover { border-color: var(--muted); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.proj-dot { width: 8px; height: 8px; border-radius: 50%; align-self: center; }
+.proj.green .proj-dot { background: var(--green); }
+.proj.amber .proj-dot { background: var(--amber); }
+.proj.red   .proj-dot { background: var(--red); }
+.proj.done  .proj-dot { background: var(--done); }
+.proj-name { font-size: 14px; font-weight: 500; color: var(--text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.proj-margin { display: flex; align-items: baseline; gap: 6px; }
+.proj-margin-num { font-family: 'DM Serif Display', serif; font-size: 22px; }
+.proj.green .proj-margin-num { color: var(--green); }
+.proj.amber .proj-margin-num { color: var(--amber); }
+.proj.red   .proj-margin-num { color: var(--red); }
+.proj.done  .proj-margin-num { color: var(--done); }
+.proj-margin-vs { font-size: 11px; color: var(--muted); }
+.proj-drift { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 10px; white-space: nowrap; }
+.proj.green .proj-drift { background: var(--green-soft); color: var(--green); }
+.proj.amber .proj-drift { background: var(--amber-soft); color: var(--amber); }
+.proj.red   .proj-drift { background: var(--red-soft);   color: var(--red); }
+.proj.done  .proj-drift { background: var(--done-soft);  color: var(--done); }
+.proj-budget { font-size: 12px; color: var(--text-2); text-align: right; min-width: 140px; }
+.proj-budget strong { font-weight: 600; color: var(--text); }
+.proj-budget.over strong { color: var(--red); }
+
+@media (max-width: 760px) {
+  .header { padding: 18px 20px; }
+  .main { padding: 20px 14px 48px; }
+  .hero-num { font-size: 48px; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .proj { grid-template-columns: 8px 1fr auto; row-gap: 6px; }
+  .proj-drift, .proj-budget { grid-column: 2 / 4; text-align: left; min-width: 0; }
+}
+
+/* Refresh / toolbar */
+.toolbar { display: flex; justify-content: flex-end; margin-bottom: 14px; }
+.refresh-btn { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; display: flex; align-items: center; gap: 6px; }
 .refresh-btn:hover { background: var(--accent); color: #fff; }
-.refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .spin { display: inline-block; }
 .refresh-btn.loading .spin { animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-.intro { font-size: 13px; color: var(--text-secondary); max-width: 580px; line-height: 1.55; }
-
-.board-section { margin-bottom: 48px; }
-.board-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; flex-wrap: wrap; }
-.board-title { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text-primary); letter-spacing: -0.01em; }
-.board-subtitle { font-size: 12px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
-.board-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.5; max-width: 760px; }
-
-/* Stoplight summary cards */
-.stoplight-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
-.stoplight {
-  border-radius: 14px; padding: 22px 24px;
-  border: 1px solid; position: relative; overflow: hidden;
-  transition: transform 0.15s;
-}
-.stoplight:hover { transform: translateY(-1px); }
-.stoplight-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
-.stoplight-count { font-family: 'DM Serif Display', serif; font-size: 56px; line-height: 1; }
-.stoplight-suffix { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
-.stoplight.green  { background: var(--green-bg);  border-color: var(--green-border); }
-.stoplight.green  .stoplight-label, .stoplight.green  .stoplight-count { color: var(--green); }
-.stoplight.yellow { background: var(--yellow-bg); border-color: var(--yellow-border); }
-.stoplight.yellow .stoplight-label, .stoplight.yellow .stoplight-count { color: var(--yellow); }
-.stoplight.red    { background: var(--red-bg);    border-color: var(--red-border); }
-.stoplight.red    .stoplight-label, .stoplight.red    .stoplight-count { color: var(--red); }
-.stoplight.done   { background: var(--done-bg);   border-color: var(--done-border); }
-.stoplight.done   .stoplight-label, .stoplight.done   .stoplight-count { color: var(--done); }
-.stoplight.empty .stoplight-count { color: var(--text-muted) !important; opacity: 0.4; }
-
-/* Project tile wall */
-.tile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
-.tile {
-  background: var(--surface); border-radius: 10px; padding: 14px 16px;
-  border: 1px solid var(--border); position: relative;
-  display: flex; flex-direction: column; gap: 6px; min-height: 96px;
-  text-decoration: none; color: inherit;
-  transition: transform 0.12s, box-shadow 0.12s;
-}
-.tile:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-.tile-stripe { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 10px 0 0 10px; }
-.tile-name { font-size: 14px; font-weight: 500; color: var(--text-primary); padding-left: 8px; line-height: 1.3; }
-.tile-bottom { display: flex; align-items: baseline; justify-content: space-between; padding-left: 8px; margin-top: auto; gap: 8px; }
-.tile-metric { font-family: 'DM Serif Display', serif; font-size: 22px; line-height: 1; }
-.tile-metric-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
-.tile-chip { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; letter-spacing: 0.04em; white-space: nowrap; }
-.tile.green  .tile-stripe { background: var(--green); }
-.tile.green  .tile-metric { color: var(--green); }
-.tile.green  .tile-chip { background: var(--green-bg);  color: var(--green); }
-.tile.yellow .tile-stripe { background: var(--yellow); }
-.tile.yellow .tile-metric { color: var(--yellow); }
-.tile.yellow .tile-chip { background: var(--yellow-bg); color: var(--yellow); }
-.tile.red    .tile-stripe { background: var(--red); }
-.tile.red    .tile-metric { color: var(--red); }
-.tile.red    .tile-chip { background: var(--red-bg);    color: var(--red); }
-.tile.done   .tile-stripe { background: var(--done); }
-.tile.done   .tile-metric { color: var(--done); }
-.tile.done   .tile-chip { background: var(--done-bg);   color: var(--done); }
-.tile.grey   .tile-stripe { background: var(--grey); }
-.tile.grey   .tile-metric { color: var(--grey); }
-.tile.grey   .tile-chip { background: var(--grey-bg);   color: var(--grey); }
-.tile-secondary { font-size: 11px; color: var(--text-secondary); padding-left: 8px; }
-
-/* Token gate (reused from milestones.html style) */
+/* Token gate */
 .token-gate { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 32px 36px; max-width: 480px; margin: 60px auto; }
 .token-gate h2 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 10px; }
-.token-gate p { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; }
-.token-input { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg); color: var(--text-primary); margin-bottom: 12px; outline: none; }
+.token-gate p { font-size: 14px; color: var(--text-2); margin-bottom: 20px; line-height: 1.6; }
+.token-input { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg); color: var(--text); margin-bottom: 12px; outline: none; }
 .token-input:focus { border-color: var(--accent); }
 .token-submit { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; padding: 10px 24px; border-radius: 7px; border: none; background: var(--accent); color: #fff; cursor: pointer; width: 100%; }
 .token-submit:hover { opacity: 0.88; }
-.token-hint { font-size: 12px; color: var(--text-muted); margin-top: 12px; line-height: 1.5; }
+.token-hint { font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.5; }
 .token-hint a { color: var(--accent); }
 
 .state-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; text-align: center; }
 .state-spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 16px; }
 .state-title { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
-.state-sub { font-size: 13px; color: var(--text-secondary); }
-
-@media (max-width: 800px) {
-  .header { padding: 20px; }
-  .main { padding: 20px 16px 48px; }
-  .stoplight-row { grid-template-columns: repeat(2, 1fr); }
-  .stoplight-count { font-size: 44px; }
-  .board-title { font-size: 22px; }
-}
+.state-sub { font-size: 13px; color: var(--text-2); }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div style="display:flex;align-items:baseline;gap:16px">
+  <div style="display:flex;align-items:baseline;gap:14px">
     <div class="logo">Open <span>Book</span></div>
     <div class="page-title">Portfolio Command</div>
   </div>
@@ -138,31 +154,26 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 
 <script>
 // ── CONFIG ───────────────────────────────────────────────────────────────
-const BUDGET_FORECAST_BOARD = '18397542356';
-const TIMELY_SYNC_BOARD     = '18413069222';
-const ACTIVE_GROUP_ID       = 'topics';
-const STORAGE_KEY           = 'ob_monday_token';
+const BOARD_ID         = '18397542356';   // Budget Forecast Board
+const ACTIVE_GROUP_ID  = 'topics';
+const CLOSED_GROUP_ID  = 'group_mm25j958';
+const STORAGE_KEY      = 'ob_monday_token';
+const TARGET_MARGIN    = 65;              // Portfolio aggregate target
 
-// Status order: red first (worst), then yellow, green, complete
-const STATUS_ORDER = { '🔴 Needs Attention': 0, '🔴 Over': 0, '🟡 Watch': 1, '🟢 On Track': 2, '🟢 Ok': 2, '✅ Complete': 3 };
+// Tripwires: drift from sold margin (in percentage points)
+const DRIFT_YELLOW = 5;   // 5–10pp below sold → watch
+const DRIFT_RED    = 10;  // >10pp below sold  → needs attention
 
-function statusClass(label) {
-  if (!label) return 'grey';
-  if (label.includes('🔴') || /needs attention|over/i.test(label)) return 'red';
-  if (label.includes('🟡') || /watch/i.test(label)) return 'yellow';
-  if (label.includes('🟢') || /on track|^ok/i.test(label)) return 'green';
-  if (label.includes('✅') || /complete/i.test(label)) return 'done';
-  return 'grey';
-}
-
-function statusShort(label) {
-  if (!label) return '—';
-  if (label.includes('🔴')) return label.replace('🔴 ', '').toUpperCase();
-  if (label.includes('🟡')) return 'WATCH';
-  if (label.includes('🟢')) return 'ON TRACK';
-  if (label.includes('✅')) return 'COMPLETE';
-  return label.toUpperCase();
-}
+// Column IDs
+const COL = {
+  health:       'color_mm01dd05',
+  soldMargin:   'numeric_mm3g9g4f',
+  planMargin:   'numeric_mm2eqtbd',
+  burnMargin:   'numeric_mm1q9gdm',
+  totalBudget:  'numeric_mm01fpy9',
+  spend:        'numeric_mm01p0yd',
+  pctComplete:  'numeric_mm1qybw0',
+};
 
 // ── MONDAY API ───────────────────────────────────────────────────────────
 async function apiCall(token, query, variables = {}) {
@@ -177,20 +188,21 @@ async function apiCall(token, query, variables = {}) {
   return d;
 }
 
-async function fetchBoard(token, boardId, columnIds) {
+async function fetchProjects(token) {
+  const colIds = JSON.stringify(Object.values(COL));
   const query = `query($boardId:ID!,$cursor:String){
     boards(ids:[$boardId]){
       items_page(limit:100,cursor:$cursor){
         cursor
-        items{ id name group{id title}
-          column_values(ids:${JSON.stringify(columnIds)}){ id text value }
+        items{ id name url group{id title}
+          column_values(ids:${colIds}){ id text value }
         }
       }
     }
   }`;
   let all = [], cursor = null, page = 0;
   while (page < 5) {
-    const data = await apiCall(token, query, { boardId, cursor });
+    const data = await apiCall(token, query, { boardId: BOARD_ID, cursor });
     const ip = data.data.boards[0].items_page;
     all = all.concat(ip.items);
     cursor = ip.cursor;
@@ -200,88 +212,103 @@ async function fetchBoard(token, boardId, columnIds) {
   return all;
 }
 
-function colMap(item) {
-  const m = {};
-  for (const cv of item.column_values) m[cv.id] = cv;
-  return m;
-}
-function asNum(cv) {
-  if (!cv) return null;
-  const t = cv.text;
-  if (t === null || t === undefined || t === '') return null;
-  const n = parseFloat(String(t).replace(/[$,%]/g, ''));
+// ── PROCESSING ───────────────────────────────────────────────────────────
+function num(cv) {
+  if (!cv || cv.text === null || cv.text === undefined || cv.text === '') return null;
+  const n = parseFloat(String(cv.text).replace(/[$,%\s]/g, ''));
   return isNaN(n) ? null : n;
 }
-function fmtPct(n) { return n === null ? '—' : (Math.round(n * 10) / 10) + '%'; }
+
+function processProject(item) {
+  const c = {};
+  for (const cv of item.column_values) c[cv.id] = cv;
+  const sold   = num(c[COL.soldMargin]);
+  const plan   = num(c[COL.planMargin]);
+  const burn   = num(c[COL.burnMargin]);
+  // Current margin = the worse of plan/burn (the math stays behind the scenes)
+  let current = null;
+  if (plan !== null && burn !== null) current = Math.min(plan, burn);
+  else if (plan !== null) current = plan;
+  else if (burn !== null) current = burn;
+
+  const budget = num(c[COL.totalBudget]);
+  const spend  = num(c[COL.spend]);
+  const remaining = (budget !== null && spend !== null) ? (budget - spend) : null;
+  const pctSpent = (budget && budget > 0 && spend !== null) ? (spend / budget * 100) : null;
+  const pctDone = num(c[COL.pctComplete]);
+  const overBudget = remaining !== null && remaining < 0;
+
+  // Drift = how many points below sold the current margin is. Positive = below sold (bad).
+  const drift = (sold !== null && current !== null) ? (sold - current) : null;
+
+  // Project is "pending" (not yet assessable) if we don't have enough data:
+  // no sold anchor, no current margin, or barely started (<10% done).
+  const pending = sold === null || current === null || (pctDone !== null && pctDone < 10);
+
+  // Status (only if not pending):
+  // - Red    if over budget OR drift > DRIFT_RED below sold
+  // - Amber  if drift > DRIFT_YELLOW below sold
+  // - Green  otherwise (holding or above sold)
+  let status;
+  if (pending) status = 'pending';
+  else if (overBudget) status = 'red';
+  else if (drift !== null && drift > DRIFT_RED) status = 'red';
+  else if (drift !== null && drift > DRIFT_YELLOW) status = 'amber';
+  else status = 'green';
+
+  return {
+    id: item.id,
+    name: item.name,
+    url: item.url,
+    group: item.group?.id,
+    sold, current, drift,
+    budget, spend, remaining, pctSpent, pctDone,
+    overBudget, status, pending,
+  };
+}
+
+function fmtPct(n, digits = 0) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  return n.toFixed(digits) + '%';
+}
 function fmtMoney(n) {
-  if (n === null) return '—';
-  if (Math.abs(n) >= 1000) return '$' + Math.round(n / 1000) + 'k';
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  const abs = Math.abs(n);
+  if (abs >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
+  if (abs >= 1000)    return '$' + Math.round(n / 1000) + 'k';
   return '$' + Math.round(n);
 }
-
-// ── PROCESSORS ───────────────────────────────────────────────────────────
-
-function processBudgetForecast(items) {
-  return items
-    .filter(it => it.group?.id === ACTIVE_GROUP_ID)
-    .map(it => {
-      const c = colMap(it);
-      const health = c['color_mm01dd05']?.text || '';
-      const planMargin = asNum(c['numeric_mm2eqtbd']);
-      const burnMargin = asNum(c['numeric_mm1q9gdm']);
-      const soldMargin = asNum(c['numeric_mm3g9g4f']);
-      const totalBudget = asNum(c['numeric_mm01fpy9']);
-      const spend = asNum(c['numeric_mm01p0yd']);
-      const pctComplete = asNum(c['numeric_mm1qybw0']);
-      const effective = (planMargin !== null && burnMargin !== null)
-        ? Math.min(planMargin, burnMargin)
-        : (planMargin !== null ? planMargin : burnMargin);
-      return { id: it.id, name: it.name, health, planMargin, burnMargin, soldMargin, totalBudget, spend, pctComplete, effective };
-    })
-    .sort((a, b) => {
-      const sa = STATUS_ORDER[a.health] ?? 99;
-      const sb = STATUS_ORDER[b.health] ?? 99;
-      if (sa !== sb) return sa - sb;
-      // Within same status, sort by worst margin first
-      const ma = a.effective ?? 999;
-      const mb = b.effective ?? 999;
-      return ma - mb;
-    });
+function fmtMoneySigned(n) {
+  if (n === null) return '—';
+  return (n < 0 ? '−' : '') + fmtMoney(Math.abs(n));
 }
 
-function processTimelySync(items) {
-  return items
-    .filter(it => it.group?.id === ACTIVE_GROUP_ID)
-    .map(it => {
-      const c = colMap(it);
-      const health = c['color_mm01dd05']?.text || '';
-      const budget = asNum(c['numeric_mm01fpy9']);
-      const spend = asNum(c['numeric_mm01p0yd']);
-      const overBy = asNum(c['numeric_mm3b5bf7']);
-      const pctSpent = (budget && budget > 0 && spend !== null) ? (spend / budget * 100) : null;
-      return { id: it.id, name: it.name, health, budget, spend, overBy, pctSpent };
-    })
-    .sort((a, b) => {
-      const sa = STATUS_ORDER[a.health] ?? 99;
-      const sb = STATUS_ORDER[b.health] ?? 99;
-      if (sa !== sb) return sa - sb;
-      // Within same status, highest % spent (worst) first
-      const pa = a.pctSpent ?? -1;
-      const pb = b.pctSpent ?? -1;
-      return pb - pa;
-    });
-}
-
-function countByStatus(projects) {
-  const counts = { red: 0, yellow: 0, green: 0, done: 0, other: 0 };
+// Weighted portfolio margin: weighted by total budget across active projects with current margin known
+function portfolioMargin(projects) {
+  let totalBudget = 0;
+  let weighted = 0;
+  let totalSpend = 0;
+  let totalRemaining = 0;
+  let countWithMargin = 0;
   for (const p of projects) {
-    const c = statusClass(p.health);
-    counts[c === 'grey' ? 'other' : c]++;
+    if (p.budget !== null) {
+      totalBudget += p.budget;
+      if (p.spend !== null) totalSpend += p.spend;
+      if (p.remaining !== null) totalRemaining += p.remaining;
+      if (p.current !== null) {
+        weighted += p.current * p.budget;
+        countWithMargin++;
+      }
+    }
   }
-  return counts;
+  const margin = totalBudget > 0 ? (weighted / totalBudget) : null;
+  return { margin, totalBudget, totalSpend, totalRemaining, n: projects.length };
 }
 
 // ── RENDER ───────────────────────────────────────────────────────────────
+function escape(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
 
 function renderTokenGate() {
   const saved = localStorage.getItem(STORAGE_KEY) || '';
@@ -299,100 +326,140 @@ function renderTokenGate() {
     if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') handleTokenSubmit(); });
   }, 0);
 }
-
 function handleTokenSubmit() {
   const token = document.getElementById('token-input')?.value.trim();
   if (!token) return;
   localStorage.setItem(STORAGE_KEY, token);
   loadDashboard(token);
 }
-
+function clearToken() { localStorage.removeItem(STORAGE_KEY); renderTokenGate(); }
 function renderLoading() {
   document.getElementById('main-content').innerHTML = `
     <div class="state-container">
       <div class="state-spinner"></div>
-      <div class="state-title">Pulling portfolio from Monday.com</div>
-      <div class="state-sub">Reading Budget Forecast and Timely Sync boards…</div>
+      <div class="state-title">Pulling portfolio</div>
+      <div class="state-sub">Reading Budget Forecast board…</div>
     </div>`;
 }
-
 function renderError(msg) {
   document.getElementById('main-content').innerHTML = `
     <div class="state-container">
       <div class="state-title" style="color:#8b2020">Couldn't load portfolio</div>
-      <div class="state-sub" style="margin-bottom:20px">${msg}</div>
+      <div class="state-sub" style="margin-bottom:20px">${escape(msg)}</div>
       <button class="token-submit" style="width:auto;padding:10px 24px" onclick="clearToken()">Re-enter token</button>
     </div>`;
 }
 
-function clearToken() { localStorage.removeItem(STORAGE_KEY); renderTokenGate(); }
-
-function renderStoplights(counts) {
-  const cells = [
-    { cls: 'red',    label: 'Needs Attention', n: counts.red },
-    { cls: 'yellow', label: 'Watch',           n: counts.yellow },
-    { cls: 'green',  label: 'On Track',        n: counts.green },
-    { cls: 'done',   label: 'Complete',        n: counts.done },
-  ];
-  return `<div class="stoplight-row">${cells.map(c => `
-    <div class="stoplight ${c.cls}${c.n === 0 ? ' empty' : ''}">
-      <div class="stoplight-label">${c.label}</div>
-      <div class="stoplight-count">${c.n}</div>
-    </div>`).join('')}</div>`;
-}
-
-function renderBudgetTile(p) {
-  const cls = statusClass(p.health);
-  const chip = statusShort(p.health);
-  const metric = p.effective !== null ? fmtPct(p.effective) : '—';
-  const metricLabel = (p.planMargin !== null && p.burnMargin !== null && p.burnMargin < p.planMargin)
-    ? 'Burn margin'
-    : 'Plan margin';
-  const secondary = p.totalBudget !== null
-    ? `${fmtMoney(p.spend || 0)} / ${fmtMoney(p.totalBudget)}${p.pctComplete !== null ? ` · ${Math.round(p.pctComplete)}% done` : ''}`
-    : '';
-  return `<div class="tile ${cls}">
-    <div class="tile-stripe"></div>
-    <div class="tile-name">${escape(p.name)}</div>
-    ${secondary ? `<div class="tile-secondary">${secondary}</div>` : ''}
-    <div class="tile-bottom">
-      <div>
-        <div class="tile-metric">${metric}</div>
-        <div class="tile-metric-label">${metricLabel}</div>
+function renderHero(agg) {
+  const m = agg.margin;
+  const cls = m === null ? 'red' : (m >= TARGET_MARGIN ? 'green' : m >= TARGET_MARGIN - 5 ? 'amber' : 'red');
+  const barPct = m === null ? 0 : Math.max(0, Math.min(100, m));
+  const targetMarker = `${TARGET_MARGIN}%`;
+  // Target marker positioned at TARGET_MARGIN% of bar width
+  return `
+    <div class="hero">
+      <div class="hero-row">
+        <div>
+          <div class="hero-label">Portfolio margin · active</div>
+          <div class="hero-num ${cls}">${fmtPct(m, 1)}</div>
+        </div>
+        <div class="hero-target">Target <strong>${targetMarker}</strong></div>
       </div>
-      <div class="tile-chip">${chip}</div>
-    </div>
-  </div>`;
-}
-
-function renderTimelyTile(p) {
-  const cls = statusClass(p.health);
-  const chip = statusShort(p.health);
-  const metric = p.pctSpent !== null ? fmtPct(p.pctSpent) : '—';
-  const secondary = p.budget !== null
-    ? `${fmtMoney(p.spend || 0)} / ${fmtMoney(p.budget)}${p.overBy && p.overBy > 0 ? ` · over by ${fmtMoney(p.overBy)}` : ''}`
-    : '';
-  return `<div class="tile ${cls}">
-    <div class="tile-stripe"></div>
-    <div class="tile-name">${escape(p.name)}</div>
-    ${secondary ? `<div class="tile-secondary">${secondary}</div>` : ''}
-    <div class="tile-bottom">
-      <div>
-        <div class="tile-metric">${metric}</div>
-        <div class="tile-metric-label">Of budget spent</div>
+      <div class="hero-bar">
+        <div class="hero-bar-fill ${cls}" style="width:${barPct}%"></div>
+        <div class="hero-bar-target" style="left:${TARGET_MARGIN}%"></div>
       </div>
-      <div class="tile-chip">${chip}</div>
-    </div>
-  </div>`;
+      <div class="hero-foot">
+        <div><strong>${agg.n}</strong> assessable project${agg.n === 1 ? '' : 's'}</div>
+        <div><strong>${fmtMoney(agg.totalBudget)}</strong> in flight</div>
+        <div><strong>${fmtMoney(agg.totalRemaining)}</strong> budget remaining</div>
+      </div>
+    </div>`;
 }
 
-function escape(s) {
-  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function renderStats(counts, overBudget) {
+  return `
+    <div class="stats">
+      <div class="stat green"><span class="stat-dot"></span><div class="stat-body"><div class="stat-num">${counts.green}</div><div class="stat-label">On track</div></div></div>
+      <div class="stat amber"><span class="stat-dot"></span><div class="stat-body"><div class="stat-num">${counts.amber}</div><div class="stat-label">Watch</div></div></div>
+      <div class="stat red"><span class="stat-dot"></span><div class="stat-body"><div class="stat-num">${counts.red}</div><div class="stat-label">Needs attention</div></div></div>
+      <div class="stat over"><span class="stat-dot"></span><div class="stat-body"><div class="stat-num">${overBudget}</div><div class="stat-label">Over budget</div></div></div>
+    </div>`;
 }
 
-function renderDashboard(budget, timely) {
-  const budgetCounts = countByStatus(budget);
-  const timelyCounts = countByStatus(timely);
+function driftLabel(drift, overBudget) {
+  if (overBudget) return 'Over budget';
+  if (drift === null) return null;
+  if (drift <= 0) return `+${(-drift).toFixed(0)}pp`;
+  return `−${drift.toFixed(0)}pp`;
+}
+
+function renderProjectRow(p, opts = {}) {
+  const cls = opts.cls || p.status;
+  const url = p.url || '#';
+  const remainStr = p.remaining === null
+    ? '—'
+    : (p.overBudget ? `Over by <strong>${fmtMoney(-p.remaining)}</strong>` : `<strong>${fmtMoney(p.remaining)}</strong> left`);
+  const budgetClass = p.overBudget ? 'proj-budget over' : 'proj-budget';
+  const doneStr = p.pctDone !== null ? ` · ${Math.round(p.pctDone)}% done` : '';
+  const soldStr = p.sold !== null ? `vs ${Math.round(p.sold)}% sold` : (p.pending ? 'no sold margin set' : '');
+  const marginStr = p.current !== null ? fmtPct(p.current, 0) : '—';
+  const drift = driftLabel(p.drift, p.overBudget);
+  const driftChip = drift ? `<span class="proj-drift">${drift}</span>` : `<span></span>`;
+  return `
+    <a class="proj ${cls}" href="${url}" target="_blank" rel="noopener">
+      <span class="proj-dot"></span>
+      <span class="proj-name">${escape(p.name)}</span>
+      <span class="proj-margin">
+        <span class="proj-margin-num">${marginStr}</span>
+        <span class="proj-margin-vs">${soldStr}</span>
+      </span>
+      ${driftChip}
+      <span class="${budgetClass}">${remainStr}${doneStr}</span>
+    </a>`;
+}
+
+function section(id, title, titleClass, projects, collapsed = false) {
+  if (!projects.length) return '';
+  return `
+    <div class="section">
+      <div class="section-head" onclick="toggleSection('${id}')">
+        <h2 class="section-title ${titleClass}">${title}</h2>
+        <span class="section-count">${projects.length} project${projects.length === 1 ? '' : 's'}</span>
+        <span class="section-toggle" id="toggle-${id}">${collapsed ? '▸' : '▾'}</span>
+      </div>
+      <div class="section-body ${collapsed ? 'collapsed' : ''}" id="body-${id}">
+        ${projects.map(p => renderProjectRow(p)).join('')}
+      </div>
+    </div>`;
+}
+
+function toggleSection(id) {
+  const body = document.getElementById('body-' + id);
+  const toggle = document.getElementById('toggle-' + id);
+  if (!body) return;
+  const collapsed = body.classList.toggle('collapsed');
+  if (toggle) toggle.textContent = collapsed ? '▸' : '▾';
+}
+
+function renderDashboard(projects) {
+  const active = projects.filter(p => p.group === ACTIVE_GROUP_ID);
+  const closed = projects.filter(p => p.group === CLOSED_GROUP_ID);
+
+  // Sort: worst (highest drift) first within each bucket
+  const byDrift = (a, b) => (b.drift ?? -Infinity) - (a.drift ?? -Infinity);
+  const red     = active.filter(p => p.status === 'red').sort(byDrift);
+  const amber   = active.filter(p => p.status === 'amber').sort(byDrift);
+  const green   = active.filter(p => p.status === 'green').sort(byDrift);
+  const pending = active.filter(p => p.status === 'pending');
+  const counts = { red: red.length, amber: amber.length, green: green.length };
+  const overBudget = active.filter(p => p.overBudget).length;
+  // Aggregate excludes pending so the portfolio number reflects projects with real data
+  const assessable = active.filter(p => !p.pending);
+  const agg = portfolioMargin(assessable);
+
+  // Closed: sort by final margin descending (best closes first)
+  const closedSorted = closed.slice().sort((a, b) => (b.current ?? -Infinity) - (a.current ?? -Infinity));
 
   const now = new Date();
   document.getElementById('last-updated').textContent =
@@ -401,55 +468,26 @@ function renderDashboard(budget, timely) {
 
   document.getElementById('main-content').innerHTML = `
     <div class="toolbar">
-      <div class="intro">
-        Two views of the same portfolio. <strong>Plan Margin</strong> is the formula-based forecast — what each project <em>should</em> earn given planned hours. <strong>Actual Spend</strong> is the live Timely-driven view of where the money's actually going.
-      </div>
       <button class="refresh-btn" id="refresh-btn" onclick="handleRefresh()">
         <span class="spin">↻</span> Refresh
       </button>
     </div>
-
-    <section class="board-section">
-      <div class="board-header">
-        <h2 class="board-title">Plan Margin</h2>
-        <span class="board-subtitle">Budget Forecast · ${budget.length} active</span>
-      </div>
-      <p class="board-desc">Project Health is set by the worse of Plan Margin and Burn Margin: ≥60% on track, ≥55% watch, &lt;55% needs attention.</p>
-      ${renderStoplights(budgetCounts)}
-      <div class="tile-grid">
-        ${budget.map(renderBudgetTile).join('')}
-      </div>
-    </section>
-
-    <section class="board-section">
-      <div class="board-header">
-        <h2 class="board-title">Actual Spend</h2>
-        <span class="board-subtitle">Timely Sync · ${timely.length} active</span>
-      </div>
-      <p class="board-desc">Manual health from Timely's % budget used: 🟢 &lt;75%, 🟡 75–99%, 🔴 100%+.</p>
-      ${renderStoplights(timelyCounts)}
-      <div class="tile-grid">
-        ${timely.map(renderTimelyTile).join('')}
-      </div>
-    </section>
+    ${renderHero(agg)}
+    ${renderStats(counts, overBudget)}
+    ${section('red',     'Needs attention', 'red',   red,   false)}
+    ${section('amber',   'Watch',           'amber', amber, false)}
+    ${section('green',   'On track',        'green', green, true)}
+    ${section('pending', 'Not yet assessable', 'grey', pending.map(p => ({...p, status: 'done'})), true)}
+    ${section('closed',  'Recently closed', 'grey',  closedSorted.map(p => ({...p, status: 'done'})), true)}
   `;
 }
 
 async function loadDashboard(token) {
   renderLoading();
   try {
-    const [budgetItems, timelyItems] = await Promise.all([
-      fetchBoard(token, BUDGET_FORECAST_BOARD, [
-        'color_mm01dd05', 'numeric_mm2eqtbd', 'numeric_mm1q9gdm',
-        'numeric_mm3g9g4f', 'numeric_mm01fpy9', 'numeric_mm01p0yd', 'numeric_mm1qybw0',
-      ]),
-      fetchBoard(token, TIMELY_SYNC_BOARD, [
-        'color_mm01dd05', 'numeric_mm01fpy9', 'numeric_mm01p0yd', 'numeric_mm3b5bf7',
-      ]),
-    ]);
-    const budget = processBudgetForecast(budgetItems);
-    const timely = processTimelySync(timelyItems);
-    renderDashboard(budget, timely);
+    const items = await fetchProjects(token);
+    const projects = items.map(processProject);
+    renderDashboard(projects);
   } catch (e) {
     renderError(e.message || String(e));
   }
@@ -463,7 +501,6 @@ async function handleRefresh() {
   await loadDashboard(token);
 }
 
-// ── BOOT ─────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem(STORAGE_KEY);
   if (token) loadDashboard(token);
