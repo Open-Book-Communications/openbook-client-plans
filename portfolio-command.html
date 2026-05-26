@@ -30,58 +30,138 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .page-title { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.5); letter-spacing: 0.1em; text-transform: uppercase; border-left: 1px solid rgba(255,255,255,0.15); padding-left: 14px; }
 .header-meta { font-size: 12px; color: rgba(255,255,255,0.55); }
 
-.main { max-width: 1080px; margin: 0 auto; padding: 32px 24px 64px; }
+.main { max-width: 1140px; margin: 0 auto; padding: 28px 24px 56px; }
+.row { display: grid; gap: 12px; margin-bottom: 12px; }
+.row-2 { grid-template-columns: 1fr 1fr; }
+.row-3 { grid-template-columns: repeat(3, 1fr); }
 
-/* Portfolio hero */
-.hero { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px 32px; margin-bottom: 18px; }
-.hero-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 14px; }
-.hero-num { font-family: 'DM Serif Display', serif; font-size: 64px; line-height: 0.9; }
-.hero-num.green { color: var(--green); }
-.hero-num.amber { color: var(--amber); }
-.hero-num.red   { color: var(--red); }
-.hero-label { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-.hero-target { font-size: 13px; color: var(--text-2); }
-.hero-target strong { color: var(--text); font-weight: 600; }
-.hero-bar { height: 10px; background: var(--bg); border-radius: 100px; overflow: hidden; position: relative; }
-.hero-bar-fill { height: 100%; border-radius: 100px; transition: width 0.4s; }
-.hero-bar-fill.green { background: var(--green); }
-.hero-bar-fill.amber { background: var(--amber); }
-.hero-bar-fill.red   { background: var(--red); }
-.hero-bar-target { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text); }
-.hero-bar-target::after { content: '65%'; position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--text); font-weight: 600; white-space: nowrap; }
-.hero-foot { display: flex; gap: 24px; flex-wrap: wrap; font-size: 13px; color: var(--text-2); margin-top: 16px; }
-.hero-foot strong { color: var(--text); font-weight: 600; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; }
+.card-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; color: var(--text-2); margin-bottom: 8px; }
+.card-label .muted { color: var(--muted); }
 
-/* Stat strip */
-.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 32px; }
-.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; }
-.stat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.stat.green  .stat-dot { background: var(--green); }
-.stat.amber  .stat-dot { background: var(--amber); }
-.stat.red    .stat-dot { background: var(--red); }
-.stat.over   .stat-dot { background: var(--red); box-shadow: 0 0 0 4px var(--red-soft); }
-.stat-body { flex: 1; min-width: 0; }
-.stat-num { font-family: 'DM Serif Display', serif; font-size: 26px; line-height: 1; }
-.stat.green .stat-num  { color: var(--green); }
-.stat.amber .stat-num  { color: var(--amber); }
-.stat.red   .stat-num,
-.stat.over  .stat-num  { color: var(--red); }
-.stat-label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4px; }
+/* Margin hero — two side by side */
+.margin-card .margin-num { font-family: 'DM Serif Display', serif; font-size: 50px; line-height: 0.95; display: inline-block; vertical-align: baseline; }
+.margin-card .margin-vs { font-size: 12px; color: var(--text-2); margin-left: 10px; }
+.margin-card .margin-vs strong { color: var(--text); font-weight: 600; }
+.margin-card.green .margin-num { color: var(--green); }
+.margin-card.amber .margin-num { color: var(--amber); }
+.margin-card.red   .margin-num { color: var(--red); }
+.timestamp { font-size: 12px; color: var(--muted); text-align: right; padding-right: 4px; }
+
+/* Stat strip — three boxes */
+.stat-card { padding: 18px 22px; }
+.stat-label { font-size: 11px; font-weight: 500; color: var(--text-2); margin-bottom: 8px; }
+.stat-counts { font-family: 'DM Serif Display', serif; font-size: 22px; line-height: 1; display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.stat-counts .seg { display: flex; align-items: baseline; gap: 6px; }
+.stat-counts .seg.green span:first-child { color: var(--green); }
+.stat-counts .seg.amber span:first-child { color: var(--amber); }
+.stat-counts .seg.red   span:first-child { color: var(--red); }
+.stat-counts .seg span:last-child { font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--text-2); font-weight: 400; }
+.stat-money { font-family: 'DM Serif Display', serif; font-size: 32px; line-height: 1; color: var(--text); }
+.stat-foot { font-size: 12px; color: var(--text-2); margin-top: 8px; }
+
+/* Needs your attention banner */
+.attn { background: #fef5ed; border: 1px solid #f4d8b8; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+.attn-icon { font-size: 14px; color: #c4660a; }
+.attn-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.attn-count { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; background: #fff; color: var(--text-2); border: 1px solid var(--border); }
+.attn-count.zero { color: var(--green); border-color: var(--green-soft); background: var(--green-soft); }
+.attn-body { flex: 1; font-size: 13px; color: var(--text-2); }
+.attn.clear { background: var(--bg); border-color: var(--border); }
+.attn.clear .attn-icon { color: var(--green); }
+.attn.has-issues { background: #fef5ed; border-color: #f4d8b8; }
+
+/* Margin bar chart */
+.chart-card { padding: 22px 26px 12px; margin-bottom: 18px; }
+.chart-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 18px; }
+.chart-wrap { position: relative; height: 220px; display: flex; align-items: stretch; padding-left: 30px; }
+.chart-y { position: absolute; left: 0; top: 0; bottom: 22px; width: 26px; display: flex; flex-direction: column-reverse; justify-content: space-between; font-size: 9px; color: var(--muted); }
+.chart-y span { line-height: 1; }
+.chart-bars { flex: 1; display: flex; align-items: flex-end; gap: 6px; position: relative; padding-bottom: 22px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); }
+.chart-grid { position: absolute; left: 0; right: 0; top: 0; bottom: 22px; pointer-events: none; }
+.chart-grid-line { position: absolute; left: 0; right: 0; height: 1px; background: var(--border); opacity: 0.5; }
+.chart-target { position: absolute; left: 0; right: 0; border-top: 1.5px dashed #1a5e3e; pointer-events: none; }
+.chart-target::after { content: 'target 65%'; position: absolute; right: 0; top: -15px; font-size: 10px; color: #1a5e3e; font-weight: 500; background: var(--surface); padding: 0 4px; }
+.chart-bar { flex: 1; position: relative; min-width: 14px; border-radius: 4px 4px 0 0; transition: opacity 0.15s; cursor: default; }
+.chart-bar:hover { opacity: 0.85; }
+.chart-bar.green { background: linear-gradient(180deg, #6db981, #4ca16a); }
+.chart-bar.amber { background: linear-gradient(180deg, #e5b04a, #c4860a); }
+.chart-bar.red   { background: linear-gradient(180deg, #d2536a, #b8253b); }
+.chart-bar.grey  { background: linear-gradient(180deg, #b8b2a8, #968f85); }
+.chart-bar-name { position: absolute; left: 50%; bottom: -20px; transform: translateX(-50%) rotate(-35deg); transform-origin: top left; font-size: 9px; color: var(--text-2); white-space: nowrap; }
+.chart-bar-val { position: absolute; left: 50%; top: -16px; transform: translateX(-50%); font-size: 10px; font-weight: 600; color: var(--text); white-space: nowrap; }
+.chart-foot { margin-top: 38px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 11px; color: var(--muted); }
 
 /* Sections */
-.section { margin-bottom: 26px; }
-.section-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; cursor: pointer; user-select: none; }
+.section { margin-bottom: 22px; }
+.section-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; cursor: pointer; user-select: none; }
 .section-head:hover .section-toggle { color: var(--text); }
-.section-title { font-family: 'DM Serif Display', serif; font-size: 22px; }
-.section-title.red   { color: var(--red); }
-.section-title.amber { color: var(--amber); }
-.section-title.green { color: var(--green); }
-.section-title.grey  { color: var(--grey); }
-.section-count { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; }
-.section-toggle { margin-left: auto; font-size: 12px; color: var(--muted); }
+.section-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.section-count { font-size: 11px; color: var(--muted); font-weight: 500; }
+.section-toggle { margin-left: auto; font-size: 11px; color: var(--muted); }
 .section-body.collapsed { display: none; }
 
-/* Project rows */
+.proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Project cards — rich 2-col */
+.pcard-wrap { position: relative; }
+.pcard { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px 14px; position: relative; overflow: hidden; cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s; }
+.pcard:hover { border-color: var(--muted); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.pcard::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+.pcard.green::before { background: var(--green); }
+.pcard.amber::before { background: var(--amber); }
+.pcard.red::before   { background: var(--red); }
+.pcard.done::before  { background: var(--done); }
+.pcard.grey::before  { background: var(--grey); }
+.pcard-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+.pcard-title-block { min-width: 0; flex: 1; }
+.pcard-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.pcard-title a { color: inherit; text-decoration: none; }
+.pcard-title a:hover { text-decoration: underline; }
+.pcard-sub { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.pcard-pills { display: flex; gap: 4px; flex-wrap: wrap; flex-shrink: 0; }
+.pill { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 100px; letter-spacing: 0.02em; white-space: nowrap; }
+.pill.green { background: var(--green-soft); color: var(--green); }
+.pill.amber { background: var(--amber-soft); color: var(--amber); }
+.pill.red   { background: var(--red-soft);   color: var(--red); }
+.pill.done  { background: var(--done-soft);  color: var(--done); }
+.pill.grey  { background: var(--grey-soft);  color: var(--grey); }
+.pcard-margin-row { margin-top: 14px; }
+.pcard-margin { font-family: 'DM Serif Display', serif; font-size: 40px; line-height: 1; display: inline-block; }
+.pcard.green .pcard-margin { color: var(--green); }
+.pcard.amber .pcard-margin { color: var(--amber); }
+.pcard.red   .pcard-margin { color: var(--red); }
+.pcard.done  .pcard-margin { color: var(--done); }
+.pcard.grey  .pcard-margin { color: var(--grey); }
+.pcard-margin-label { font-size: 11px; color: var(--text-2); margin-left: 8px; }
+.pcard-drift { font-size: 11.5px; color: var(--text-2); margin-top: 6px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.pcard-arrow.up   { color: var(--green); font-weight: 700; }
+.pcard-arrow.down { color: var(--red); font-weight: 700; }
+.pcard-arrow.flat { color: var(--muted); font-weight: 700; }
+.pcard-progress-row { margin-top: 12px; }
+.pcard-progress-meta { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-2); margin-bottom: 5px; }
+.pcard-progress-meta .right { color: var(--muted); }
+.pcard-progress { height: 6px; background: var(--bg); border-radius: 100px; overflow: hidden; }
+.pcard-progress-fill { height: 100%; border-radius: 100px; transition: width 0.4s; }
+.pcard.green .pcard-progress-fill { background: var(--green); }
+.pcard.amber .pcard-progress-fill { background: var(--amber); }
+.pcard.red   .pcard-progress-fill { background: var(--red); }
+.pcard.done  .pcard-progress-fill { background: var(--done); }
+.pcard.grey  .pcard-progress-fill { background: var(--grey); }
+.pcard-foot { display: flex; gap: 18px; margin-top: 11px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 11.5px; }
+.pcard-foot-item { display: flex; align-items: baseline; gap: 5px; }
+.pcard-foot-item .lbl { color: var(--muted); font-size: 10px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+.pcard-foot-item .val { font-weight: 600; color: var(--text); }
+.pcard-foot-item .val.red { color: var(--red); }
+.pcard-foot-item .val.muted { color: var(--muted); }
+.pcard-expand { position: absolute; top: 10px; right: 10px; font-size: 11px; color: var(--muted); padding: 2px 6px; opacity: 0; transition: opacity 0.15s; }
+.pcard:hover .pcard-expand { opacity: 1; }
+
+/* Expanded sub-deliverables sit below the card */
+.pcard-subs { background: var(--bg); border: 1px solid var(--border); border-top: none; border-radius: 0 0 12px 12px; padding: 10px 14px 12px; margin-top: -4px; }
+.pcard-wrap.expanded .pcard { border-bottom-color: var(--border); border-radius: 12px 12px 0 0; }
+
+/* Legacy proj row (kept for backwards compat — not used by main grid now) */
 .proj-wrap { margin-bottom: 6px; }
 .proj { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 14px 18px; display: grid; grid-template-columns: 10px 1fr auto auto auto 22px; gap: 18px; align-items: center; transition: border-color 0.12s, box-shadow 0.12s; cursor: pointer; }
 .proj:hover { border-color: var(--muted); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
@@ -134,15 +214,18 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .proj-budget strong { font-weight: 600; color: var(--text); }
 .proj-budget.over strong { color: var(--red); }
 
-@media (max-width: 760px) {
+@media (max-width: 880px) {
   .header { padding: 18px 20px; }
   .main { padding: 20px 14px 48px; }
-  .hero-num { font-size: 48px; }
-  .stats { grid-template-columns: repeat(2, 1fr); }
-  .proj { grid-template-columns: 8px 1fr auto 22px; row-gap: 6px; }
-  .proj-drift, .proj-budget { grid-column: 2 / 5; text-align: left; min-width: 0; }
+  .row-3 { grid-template-columns: 1fr; }
+  .row-2 { grid-template-columns: 1fr; }
+  .proj-grid { grid-template-columns: 1fr; }
+  .margin-card .margin-num { font-size: 40px; }
+  .stat-money { font-size: 26px; }
+  .chart-bar-name { font-size: 8px; }
   .sub-row { grid-template-columns: 8px 1fr auto; }
   .sub-money { grid-column: 2 / 4; text-align: left; min-width: 0; }
+  .pcard-foot { flex-wrap: wrap; }
 }
 
 /* Refresh / toolbar */
@@ -201,6 +284,7 @@ const DRIFT_RED    = 10;  // >10pp below sold  → needs attention
 const COL = {
   // Budget Forecast (parent)
   health:       'color_mm01dd05',
+  lead:         'multiple_person_mm01yhm6',
   soldMargin:   'numeric_mm3g9g4f',
   planMargin:   'numeric_mm2eqtbd',
   burnMargin:   'numeric_mm1q9gdm',
@@ -312,11 +396,12 @@ function processBudgetItem(item) {
   else if (burn !== null) current = burn;
   return {
     id: item.id, name: item.name, url: item.url, group: item.group?.id,
-    sold, current,
+    sold, current, plan, burn,
     budget: num(c[COL.totalBudget]),
     spend:  num(c[COL.spend]),
     pctDone: num(c[COL.pctComplete]),
     health: c[COL.health]?.text || '',
+    lead:   c[COL.lead]?.text || '',
   };
 }
 
@@ -357,13 +442,17 @@ function mergeProject(bf, tm, subs) {
   const id   = bf?.id  || tm?.id;
   const group = bf?.group || tm?.group;
 
-  const sold   = bf?.sold ?? null;
-  const current = bf?.current ?? null;
-  const pctDone = bf?.pctDone ?? null;
+  const sold     = bf?.sold ?? null;
+  const current  = bf?.current ?? null;
+  const planM    = bf?.plan ?? null;
+  const burnM    = bf?.burn ?? null;
+  const pctDone  = bf?.pctDone ?? null;
+  const lead     = bf?.lead ?? '';
 
-  // Prefer Timely's live spend/budget if available — it's the live sync.
-  // Fall back to Budget Forecast values.
-  const budget = tm?.budget ?? bf?.budget ?? null;
+  // Contract amount = the original sold budget (from Budget Forecast). Fall
+  // back to Timely's budget if no Budget Forecast row exists.
+  // Live spend prefers Timely (it's the real-time sync).
+  const budget = bf?.budget ?? tm?.budget ?? null;
   const spend  = tm?.spend  ?? bf?.spend  ?? null;
   const remaining = (budget !== null && spend !== null) ? (budget - spend) : null;
   const pctSpent  = (budget && budget > 0 && spend !== null) ? (spend / budget * 100) : null;
@@ -386,8 +475,8 @@ function mergeProject(bf, tm, subs) {
   else status = 'green';
 
   return {
-    id, name, url, group,
-    sold, current, drift, pctDone,
+    id, name, url, group, lead,
+    sold, current, plan: planM, burn: burnM, drift, pctDone,
     budget, spend, remaining, pctSpent,
     overBudget, status, pending,
     manualHealth: tm?.health || bf?.health || '',
@@ -480,40 +569,112 @@ function renderError(msg) {
     </div>`;
 }
 
-function renderHero(agg) {
-  const m = agg.margin;
-  const cls = m === null ? 'red' : (m >= TARGET_MARGIN ? 'green' : m >= TARGET_MARGIN - 5 ? 'amber' : 'red');
-  const barPct = m === null ? 0 : Math.max(0, Math.min(100, m));
-  const targetMarker = `${TARGET_MARGIN}%`;
-  // Target marker positioned at TARGET_MARGIN% of bar width
+function marginClass(m) {
+  if (m === null) return 'grey';
+  if (m >= TARGET_MARGIN) return 'green';
+  if (m >= TARGET_MARGIN - 5) return 'amber';
+  return 'red';
+}
+
+function renderTopRow(activeAgg, closedAgg, weekLabel) {
+  const aCls = marginClass(activeAgg.margin);
+  const cCls = marginClass(closedAgg.margin);
   return `
-    <div class="hero">
-      <div class="hero-row">
+    <div class="row row-3" style="grid-template-columns: 1fr 1fr 200px;">
+      <div class="card margin-card ${aCls}">
+        <div class="card-label">Active portfolio plan margin <span class="muted">(weighted by contract $)</span></div>
         <div>
-          <div class="hero-label">Portfolio margin · active</div>
-          <div class="hero-num ${cls}">${fmtPct(m, 1)}</div>
+          <span class="margin-num">${fmtPct(activeAgg.margin, 1)}</span>
+          <span class="margin-vs">target <strong>${TARGET_MARGIN}%</strong></span>
         </div>
-        <div class="hero-target">Target <strong>${targetMarker}</strong></div>
       </div>
-      <div class="hero-bar">
-        <div class="hero-bar-fill ${cls}" style="width:${barPct}%"></div>
-        <div class="hero-bar-target" style="left:${TARGET_MARGIN}%"></div>
+      <div class="card margin-card ${cCls}">
+        <div class="card-label">Closed margin <span class="muted">(all-time, weighted)</span></div>
+        <div>
+          <span class="margin-num">${closedAgg.margin === null ? '—' : fmtPct(closedAgg.margin, 1)}</span>
+          <span class="margin-vs">vs <strong>${TARGET_MARGIN}%</strong> target</span>
+        </div>
       </div>
-      <div class="hero-foot">
-        <div><strong>${agg.n}</strong> assessable project${agg.n === 1 ? '' : 's'}</div>
-        <div><strong>${fmtMoney(agg.totalBudget)}</strong> in flight</div>
-        <div><strong>${fmtMoney(agg.totalRemaining)}</strong> budget remaining</div>
+      <div class="card" style="display:flex; align-items:flex-end;">
+        <div class="timestamp" style="text-align:left;">${weekLabel}</div>
       </div>
     </div>`;
 }
 
-function renderStats(counts, overBudget) {
+function renderStatRow(counts, totalBudget, totalSpend, totalRemaining, nActive) {
   return `
-    <div class="stats">
-      <div class="stat green"><span class="stat-dot"></span><div class="stat-body"><div class="stat-num">${counts.green}</div><div class="stat-label">On track</div></div></div>
-      <div class="stat amber"><span class="stat-dot"></span><div class="stat-body"><div class="stat-num">${counts.amber}</div><div class="stat-label">Watch</div></div></div>
-      <div class="stat red"><span class="stat-dot"></span><div class="stat-body"><div class="stat-num">${counts.red}</div><div class="stat-label">Needs attention</div></div></div>
-      <div class="stat over"><span class="stat-dot"></span><div class="stat-body"><div class="stat-num">${overBudget}</div><div class="stat-label">Over budget</div></div></div>
+    <div class="row row-3">
+      <div class="card stat-card">
+        <div class="stat-label">Project health</div>
+        <div class="stat-counts">
+          <span class="seg green"><span>${counts.green}</span><span>green</span></span>
+          <span class="seg amber"><span>${counts.amber}</span><span>yellow</span></span>
+          <span class="seg red"><span>${counts.red}</span><span>red</span></span>
+        </div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">Portfolio in flight</div>
+        <div class="stat-money">${fmtMoney(totalBudget)}</div>
+        <div class="stat-foot">across ${nActive} project${nActive === 1 ? '' : 's'}</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">Portfolio runway</div>
+        <div class="stat-money">${fmtMoney(totalRemaining)}</div>
+        <div class="stat-foot">unbilled of ${fmtMoney(totalBudget)}</div>
+      </div>
+    </div>`;
+}
+
+function renderAttentionBanner(redProjects) {
+  const n = redProjects.length;
+  if (n === 0) {
+    return `
+      <div class="attn clear">
+        <span class="attn-icon">✓</span>
+        <span class="attn-title">Needs your attention</span>
+        <span class="attn-count zero">0</span>
+        <span class="attn-body">All clear — no projects red on plan margin or over budget.</span>
+      </div>`;
+  }
+  const names = redProjects.slice(0, 3).map(p => p.name).join(', ') + (redProjects.length > 3 ? `, +${redProjects.length - 3} more` : '');
+  return `
+    <div class="attn has-issues">
+      <span class="attn-icon">!</span>
+      <span class="attn-title">Needs your attention</span>
+      <span class="attn-count">${n}</span>
+      <span class="attn-body">${escape(names)}</span>
+    </div>`;
+}
+
+function renderMarginChart(projects) {
+  // Sort high-to-low by current (effective) margin. Show only assessable projects.
+  const assessable = projects.filter(p => !p.pending && p.current !== null);
+  const sorted = assessable.slice().sort((a, b) => (b.current ?? -1) - (a.current ?? -1));
+  if (!sorted.length) return '';
+  const maxY = 100;
+  const targetPct = (TARGET_MARGIN / maxY) * 100;
+  const bars = sorted.map(p => {
+    const heightPct = Math.max(2, (p.current / maxY) * 100);
+    const shortName = p.name.length > 22 ? p.name.slice(0, 20) + '…' : p.name;
+    return `
+      <div class="chart-bar ${p.status}" style="height: ${heightPct}%" title="${escape(p.name)}: ${fmtPct(p.current, 1)}">
+        <div class="chart-bar-val">${Math.round(p.current)}%</div>
+        <div class="chart-bar-name">${escape(shortName)}</div>
+      </div>`;
+  }).join('');
+  return `
+    <div class="card chart-card">
+      <div class="chart-title">Plan margin by project</div>
+      <div class="chart-wrap">
+        <div class="chart-y">
+          <span>0%</span><span>20%</span><span>40%</span><span>60%</span><span>80%</span><span>100%</span>
+        </div>
+        <div class="chart-bars">
+          <div class="chart-target" style="bottom: ${targetPct}%"></div>
+          ${bars}
+        </div>
+      </div>
+      <div class="chart-foot">Sorted high to low. Bars colored by drift from sold margin. Dashed line = ${TARGET_MARGIN}% portfolio target.</div>
     </div>`;
 }
 
@@ -552,60 +713,120 @@ function renderSubitem(s) {
     </div>`;
 }
 
-function renderProjectRow(p, opts = {}) {
-  const cls = opts.cls || p.status;
+function healthPillLabel(p) {
+  if (p.pending) return { label: 'pending', cls: 'grey' };
+  if (p.status === 'red')   return { label: 'attention', cls: 'red' };
+  if (p.status === 'amber') return { label: 'watch',     cls: 'amber' };
+  if (p.status === 'done')  return { label: 'closed',    cls: 'done' };
+  return { label: 'on plan', cls: 'green' };
+}
+
+function soldPill(p) {
+  if (p.sold === null || p.current === null) return { label: 'no sold', cls: 'grey' };
+  if (p.drift === null) return null;
+  // drift = sold - current; positive = below sold (bad)
+  if (Math.abs(p.drift) <= 1) return { label: '~ sold',  cls: 'grey' };
+  if (p.drift < 0)             return { label: '+ sold', cls: 'green' };
+  return { label: '− sold', cls: 'red' };
+}
+
+function renderProjectCard(p) {
+  const cls = p.status;
   const url = p.url || '#';
-  const remainStr = p.remaining === null
-    ? '—'
-    : (p.overBudget ? `Over by <strong>${fmtMoney(-p.remaining)}</strong>` : `<strong>${fmtMoney(p.remaining)}</strong> left`);
-  const budgetClass = p.overBudget ? 'proj-budget over' : 'proj-budget';
-  const doneStr = p.pctDone !== null ? ` · ${Math.round(p.pctDone)}% done` : '';
-  const soldStr = p.sold !== null ? `vs ${Math.round(p.sold)}% sold` : (p.pending ? 'no sold margin' : '');
-  const marginStr = p.current !== null ? fmtPct(p.current, 0) : '—';
-  const drift = driftLabel(p.drift, p.overBudget);
-  const driftChip = drift ? `<span class="proj-drift">${drift}</span>` : `<span></span>`;
   const tmOnly = !p.hasBudgetForecast && p.hasTimely;
-  const trackBadge = tmOnly ? `<span class="proj-badge">Timely only</span>` : '';
+  const contractStr = p.budget !== null ? fmtMoney(p.budget) : '—';
+  const leadStr = p.lead ? p.lead : 'Unassigned';
+  const subtitle = `Lead: ${escape(leadStr)} · ${contractStr} contract${tmOnly ? ' · Timely only' : ''}`;
+
+  const healthPill = healthPillLabel(p);
+  const sPill = soldPill(p);
+  const pills = [healthPill, sPill].filter(Boolean)
+    .map(p => `<span class="pill ${p.cls}">${p.label}</span>`).join('');
+
+  const marginStr = p.current !== null ? fmtPct(p.current, 1) : '—';
+  const marginLabel = p.pending ? '' : 'plan margin';
+
+  // Drift line
+  let driftLine = '';
+  if (p.pending) {
+    driftLine = `<span class="pcard-arrow flat">~</span> waiting on data`;
+  } else if (p.drift !== null && p.sold !== null) {
+    const arrow = Math.abs(p.drift) <= 0.5 ? '~' : (p.drift < 0 ? '▲' : '▼');
+    const cls = Math.abs(p.drift) <= 0.5 ? 'flat' : (p.drift < 0 ? 'up' : 'down');
+    const sign = p.drift <= 0 ? '+' : '−';
+    const pp = Math.abs(p.drift).toFixed(1);
+    const burnStr = p.burn !== null ? ` · burn ${Math.round(p.burn)}%` : '';
+    driftLine = `<span class="pcard-arrow ${cls}">${arrow}</span> ${sign}${pp}pp from sold (${fmtPct(p.sold, 1)})${burnStr}`;
+  }
+
+  // Progress bar
+  const progressPct = p.budget && p.budget > 0 && p.spend !== null
+    ? Math.min(100, (p.spend / p.budget) * 100)
+    : 0;
+  const spendStr = p.spend !== null ? fmtMoney(p.spend) : '$0';
+  const budgetStr = p.budget !== null ? fmtMoney(p.budget) : '$0';
+  const pctSpentStr = p.pctSpent !== null ? `${Math.round(p.pctSpent)}%` : '0%';
+
+  // Foot: $ left, Over $, % done
+  const remainVal = p.remaining !== null ? fmtMoney(p.remaining) : '—';
+  const overVal = p.overBudget ? fmtMoney(-p.remaining) : '$0';
+  const doneVal = p.pctDone !== null ? `${Math.round(p.pctDone)}%` : '—';
+
   const hasSubs = p.subitems && p.subitems.length > 0;
-  const expandIcon = hasSubs ? '▸' : '';
-  const linkHref = url !== '#' ? url : null;
   const subsHtml = hasSubs
-    ? `<div class="subs">
+    ? `<div class="pcard-subs">
          <div class="subs-head">Deliverables (${p.subitems.length})</div>
          ${p.subitems.map(renderSubitem).join('')}
        </div>`
     : '';
 
-  // The name is a separate link so clicking the name opens Monday,
-  // but clicking elsewhere on the row toggles expansion.
-  const nameHtml = linkHref
-    ? `<a class="proj-name-link" href="${linkHref}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escape(p.name)}</a>${trackBadge}`
-    : `${escape(p.name)}${trackBadge}`;
-
   return `
-    <div class="proj-wrap" data-id="${p.id}">
-      <div class="proj ${cls}" onclick="toggleProject(this)">
-        <span class="proj-dot"></span>
-        <span class="proj-name">${nameHtml}</span>
-        <span class="proj-margin">
-          <span class="proj-margin-num">${marginStr}</span>
-          <span class="proj-margin-vs">${soldStr}</span>
-        </span>
-        ${driftChip}
-        <span class="${budgetClass}">${remainStr}${doneStr}</span>
-        <span class="proj-expand">${expandIcon}</span>
+    <div class="pcard-wrap" data-id="${p.id}">
+      <div class="pcard ${cls}" onclick="toggleCard(this, event)">
+        <div class="pcard-head">
+          <div class="pcard-title-block">
+            <div class="pcard-title"><a href="${url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escape(p.name)}</a></div>
+            <div class="pcard-sub">${subtitle}</div>
+          </div>
+          <div class="pcard-pills">${pills}</div>
+        </div>
+
+        <div class="pcard-margin-row">
+          <span class="pcard-margin">${marginStr}</span>
+          <span class="pcard-margin-label">${marginLabel}</span>
+          <div class="pcard-drift">${driftLine}</div>
+        </div>
+
+        <div class="pcard-progress-row">
+          <div class="pcard-progress-meta">
+            <span><strong>${spendStr}</strong> spent of ${budgetStr}</span>
+            <span class="right">${pctSpentStr}</span>
+          </div>
+          <div class="pcard-progress"><div class="pcard-progress-fill" style="width: ${progressPct}%"></div></div>
+        </div>
+
+        <div class="pcard-foot">
+          <span class="pcard-foot-item"><span class="lbl">$ left</span><span class="val ${p.overBudget ? 'red' : ''}">${remainVal}</span></span>
+          <span class="pcard-foot-item"><span class="lbl">Over</span><span class="val ${p.overBudget ? 'red' : 'muted'}">${overVal}</span></span>
+          <span class="pcard-foot-item"><span class="lbl">Done</span><span class="val">${doneVal}</span></span>
+          ${hasSubs ? `<span class="pcard-expand" id="exp-${p.id}">▸ ${p.subitems.length} deliverables</span>` : ''}
+        </div>
       </div>
-      ${subsHtml ? `<div class="proj-sub-container" style="display:none">${subsHtml}</div>` : ''}
+      ${subsHtml ? `<div class="pcard-sub-container" style="display:none">${subsHtml}</div>` : ''}
     </div>`;
 }
 
-function toggleProject(el) {
-  const wrap = el.closest('.proj-wrap');
+function toggleCard(el, ev) {
+  // Don't toggle when clicking on the project name link
+  if (ev && ev.target.closest('a')) return;
+  const wrap = el.closest('.pcard-wrap');
   if (!wrap) return;
-  const container = wrap.querySelector('.proj-sub-container');
-  if (!container) return;  // no subitems
+  const container = wrap.querySelector('.pcard-sub-container');
+  if (!container) return;
   const expanded = wrap.classList.toggle('expanded');
   container.style.display = expanded ? 'block' : 'none';
+  const exp = wrap.querySelector('.pcard-expand');
+  if (exp) exp.textContent = (expanded ? '▾ ' : '▸ ') + exp.textContent.replace(/^[▸▾]\s*/, '');
 }
 
 function section(id, title, titleClass, projects, collapsed = false) {
@@ -613,12 +834,12 @@ function section(id, title, titleClass, projects, collapsed = false) {
   return `
     <div class="section">
       <div class="section-head" onclick="toggleSection('${id}')">
-        <h2 class="section-title ${titleClass}">${title}</h2>
+        <span class="section-title">${title}</span>
         <span class="section-count">${projects.length} project${projects.length === 1 ? '' : 's'}</span>
         <span class="section-toggle" id="toggle-${id}">${collapsed ? '▸' : '▾'}</span>
       </div>
       <div class="section-body ${collapsed ? 'collapsed' : ''}" id="body-${id}">
-        ${projects.map(p => renderProjectRow(p)).join('')}
+        <div class="proj-grid">${projects.map(p => renderProjectCard(p)).join('')}</div>
       </div>
     </div>`;
 }
@@ -653,10 +874,22 @@ function renderDashboard(projects) {
   // Closed: sort by final margin descending (best closes first)
   const closedSorted = closed.slice().sort((a, b) => (b.current ?? -Infinity) - (a.current ?? -Infinity));
 
+  const closedAgg = portfolioMargin(closed.filter(p => p.current !== null));
+
   const now = new Date();
+  const weekStart = new Date(now);
+  // Week of Monday for the current week
+  const day = weekStart.getDay();
+  const diff = (day === 0 ? -6 : 1 - day);
+  weekStart.setDate(weekStart.getDate() + diff);
+  const weekLabel = 'Week of ' + weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
   document.getElementById('last-updated').textContent =
     'Updated ' + now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) +
     ' · ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+  // Attention list: red status OR over budget
+  const attentionList = active.filter(p => p.status === 'red' || p.overBudget);
 
   document.getElementById('main-content').innerHTML = `
     <div class="toolbar">
@@ -664,20 +897,26 @@ function renderDashboard(projects) {
         <span class="spin">↻</span> Refresh
       </button>
     </div>
-    ${renderHero(agg)}
-    ${renderStats(counts, overBudget)}
-    ${section('red',     'Needs attention', 'red',   red,   false)}
-    ${section('amber',   'Watch',           'amber', amber, false)}
-    ${section('green',   'On track',        'green', green, true)}
-    ${section('pending', 'Not yet assessable', 'grey', pending.map(p => ({...p, status: 'done'})), true)}
-    ${section('closed',  'Recently closed', 'grey',  closedSorted.map(p => ({...p, status: 'done'})), true)}
+    ${renderTopRow(agg, closedAgg, weekLabel)}
+    ${renderStatRow(counts, agg.totalBudget, agg.totalSpend, agg.totalRemaining, assessable.length)}
+    ${renderAttentionBanner(attentionList)}
+    ${renderMarginChart(active)}
+    ${section('red',     'Needs attention',    'red',   red,   false)}
+    ${section('amber',   'Watch',              'amber', amber, false)}
+    ${section('green',   'On track',           'green', green, true)}
+    ${section('pending', 'Not yet assessable', 'grey',  pending.map(p => ({...p, status: 'grey'})), true)}
+    ${section('closed',  'Recently closed',    'grey',  closedSorted.map(p => ({...p, status: 'done'})), true)}
+    <div style="margin-top: 28px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+      <span>Live from Budget Forecast Board + Timely Sync Board · ${active.length} active · ${attentionList.length} alert${attentionList.length === 1 ? '' : 's'}</span>
+      <span>Click any card to expand deliverables · click name to open in Monday</span>
+    </div>
   `;
 }
 
 async function loadDashboard(token) {
   renderLoading();
   try {
-    const budgetCols = [COL.health, COL.soldMargin, COL.planMargin, COL.burnMargin,
+    const budgetCols = [COL.health, COL.lead, COL.soldMargin, COL.planMargin, COL.burnMargin,
                         COL.totalBudget, COL.spend, COL.pctComplete];
     const timelyCols = [COL.tmHealth, COL.tmBudget, COL.tmSpend, COL.tmOverBy];
     const subCols    = [COL.subHealth, COL.subBudget, COL.subSpent, COL.subPctUsed, COL.subHours];
