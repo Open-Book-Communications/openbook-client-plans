@@ -10,12 +10,19 @@ on:
 permissions:
   contents: write
 
+# Force all JS-based actions onto Node 24 ahead of the June 2026 cutover.
+# Some actions (e.g. setup-python) don't yet have a v6 release that ships
+# with Node 24; this env var opts them in early. Safe to remove once every
+# action below has a version that natively runs on Node 24.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
         uses: actions/setup-python@v5
