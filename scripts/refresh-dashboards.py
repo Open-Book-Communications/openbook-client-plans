@@ -607,6 +607,7 @@ def render_client(client_cfg: dict, token: str, jinja_env: Environment) -> str |
             "close_date_display": format_date_long(close),
             "check_in_end_display": format_date_long(check_in_end),
             "is_closed": is_closed,
+            "hide_tracker": client_cfg.get("hide_tracker", False),
         },
         "tracker_steps": tracker_steps,
         "workstreams": visible_workstreams,
