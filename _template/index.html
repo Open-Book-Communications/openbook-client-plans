@@ -332,7 +332,7 @@
   {% endif %}
 
   {# ── PHASE / DELIVERABLE TRACKER ───────────────────────────── #}
-  {% if tracker_steps %}
+  {% if tracker_steps and not client.hide_tracker %}
   <div class="section-heading">
     {% if client.project_type == 'linear' %}Phase Progress{% else %}Deliverable Tracker{% endif %}
   </div>

@@ -55,6 +55,7 @@ clients:
     kickoff_date: "2026-04-14"
     close_date: "2027-04-30"
     project_type: ongoing
+    hide_tracker: true
     deliverables:
       - 2025 Impact Report
       - Impact Video Reskin
