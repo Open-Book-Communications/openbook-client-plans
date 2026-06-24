@@ -33,7 +33,7 @@ clients:
   - slug: holy-family
     display_name: Holy Family Ministries
     monday_group_id: group_mm4bark3
-    kickoff_date: "2026-06-12"
+    kickoff_date: "2026-05-12"
     close_date: "2026-12-16"
     project_type: linear
 
