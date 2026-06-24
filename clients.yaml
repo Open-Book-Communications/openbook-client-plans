@@ -31,10 +31,17 @@ clients:
     project_type: linear
 
   - slug: holy-family
-    display_name: Holy Family
-    monday_group_id: group_mm01skcr
-    kickoff_date: "2026-02-17"
-    close_date: "2026-08-24"
+    display_name: Holy Family Ministries
+    monday_group_id: group_mm4bark3
+    kickoff_date: "2026-06-12"
+    close_date: "2026-12-16"
+    project_type: linear
+
+  - slug: civic-navigator
+    display_name: Civic Navigator
+    monday_group_id: group_mm3zpxgx
+    kickoff_date: "2026-06-08"
+    close_date: "2026-10-20"
     project_type: linear
 
   - slug: mn-land-trust
