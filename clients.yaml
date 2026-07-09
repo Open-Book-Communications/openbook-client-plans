@@ -41,7 +41,7 @@ clients:
     display_name: Christ Central Durham
     monday_group_id: group_mm4j6gha
     kickoff_date: "2026-07-09"
-    close_date: "2027-01-09"
+    close_date: "2027-09-30"
     project_type: linear
 
   - slug: civic-navigator
