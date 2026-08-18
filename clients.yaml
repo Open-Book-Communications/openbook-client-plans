@@ -37,6 +37,13 @@ clients:
     close_date: "2026-12-16"
     project_type: linear
 
+  - slug: beacon
+    display_name: Beacon Interfaith
+    monday_group_id: group_mm4magfz
+    kickoff_date: "2026-09-18"
+    close_date: "2027-06-23"
+    project_type: linear
+
   - slug: christ-central
     display_name: Christ Central Durham
     monday_group_id: group_mm4j6gha
