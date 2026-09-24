@@ -12,16 +12,10 @@ clients:
 
   - slug: stony-brook
     display_name: The Stony Brook School
-    monday_group_id: group_mm0jnqbf
-    kickoff_date: "2025-11-17"
-    close_date: "2026-08-31"
+    monday_group_id: group_mm7fa8x0
+    kickoff_date: "2026-09-24"
+    close_date: "2027-03-24"
     project_type: linear
-    phases:
-      - START-UP
-      - KNOW
-      - SHOW
-      - BUILD
-      - CLOSE-OUT
 
   - slug: dairyland
     display_name: Dairyland
