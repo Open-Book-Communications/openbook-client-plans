@@ -13,8 +13,8 @@ clients:
   - slug: stony-brook
     display_name: The Stony Brook School
     monday_group_id: group_mm7fa8x0
-    kickoff_date: "2026-09-24"
-    close_date: "2027-03-24"
+    kickoff_date: "2026-10-05"
+    close_date: "2027-01-15"
     project_type: linear
 
   - slug: dairyland
