@@ -294,6 +294,21 @@
   }
   .footer-brand { font-family: 'Libre Baskerville', serif; font-size: 13px; color: var(--muted); }
   .footer-note  { font-size: 11px; color: var(--muted); text-align: right; }
+  .footer-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+
+  .refresh-btn {
+    background: #fff; border: 1px solid var(--border); color: var(--muted);
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600;
+    padding: 6px 12px; border-radius: 4px; cursor: pointer;
+    letter-spacing: .02em; transition: all .15s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .refresh-btn:hover:not(:disabled) { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .refresh-btn:disabled { opacity: .6; cursor: default; }
+  .refresh-btn.success { background: #E8F5E9; color: #2E7D32; border-color: #A5D6A7; }
+  .refresh-btn.error { background: #FFEBEE; color: #C62828; border-color: #EF9A9A; }
+  .refresh-btn .spin { display: inline-block; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   @media print {
     .page { padding: 20px; }
@@ -713,6 +728,17 @@
         <td class="ms-notes">TOB presents designed mockups for the homepage and key landing pages. A separate feedback session follows to drive toward directional sign-off.</td>
       </tr>
       
+      <tr class="row-done" data-status="done" data-ws="Vision Video (Motion Graphic, 2-min)">
+        <td class="ms-date">Sep 28</td>
+        <td class="ms-name">Calibration Session — Script V1 + Visual Treatment Feedback<span class="ms-type-label">Client Meeting</span></td>
+        <td class="ms-ws">Vision Video (Motion Graphic, 2-min)</td>
+        <td class="ms-type">
+          <span class="done-check">✓ Done</span>
+          
+        </td>
+        <td class="ms-notes">Come prepared to discuss feedback on direction presented previously—In working toward approval of a script, and audio mix.</td>
+      </tr>
+      
       <tr class="row-done" data-status="done" data-ws="Website">
         <td class="ms-date">Sep 30</td>
         <td class="ms-name">Copy Guidance Doc for HFM-Written Pages<span class="ms-type-label">Email Deliverable</span></td>
@@ -724,15 +750,37 @@
         <td class="ms-notes"></td>
       </tr>
       
-      <tr class="row-approval" data-status="upcoming key-meeting" data-ws="Vision Video (Motion Graphic, 2-min)">
-        <td class="ms-date">Sep 28</td>
-        <td class="ms-name">Calibration Session — Script V1 + Visual Treatment Feedback<span class="ms-type-label">Client Meeting</span></td>
+      <tr class="row-done" data-status="done" data-ws="Vision Video (Motion Graphic, 2-min)">
+        <td class="ms-date">Oct 1</td>
+        <td class="ms-name">Present Full Storyboards to Client<span class="ms-type-label">Client Meeting</span></td>
         <td class="ms-ws">Vision Video (Motion Graphic, 2-min)</td>
         <td class="ms-type">
-          <span style="font-weight:600;color:var(--approval-text)">Key Meeting</span>
+          <span class="done-check">✓ Done</span>
           
         </td>
-        <td class="ms-notes">Come prepared to discuss feedback on direction presented previously—In working toward approval of a script, and audio mix.</td>
+        <td class="ms-notes">TOB presentation of full storyboards built from the confirmed creative direction. No prep needed—a calibration session follows to gather deliberate feedback and move toward action.</td>
+      </tr>
+      
+      <tr class="row-done" data-status="done" data-ws="Vision Video (Motion Graphic, 2-min)">
+        <td class="ms-date">Oct 1</td>
+        <td class="ms-name">Calibration Session — Storyboard Feedback<span class="ms-type-label">Client Meeting</span></td>
+        <td class="ms-ws">Vision Video (Motion Graphic, 2-min)</td>
+        <td class="ms-type">
+          <span class="done-check">✓ Done</span>
+          
+        </td>
+        <td class="ms-notes">Come prepared to discuss storyboard feedback—goal is align on feedback and work toward your sign off to begin building the video.</td>
+      </tr>
+      
+      <tr class="row-done" data-status="done" data-ws="Vision Video (Motion Graphic, 2-min)">
+        <td class="ms-date">Oct 1</td>
+        <td class="ms-name">Green Light to Move Forward<span class="ms-type-label">Decision</span></td>
+        <td class="ms-ws">Vision Video (Motion Graphic, 2-min)</td>
+        <td class="ms-type">
+          <span class="done-check">✓ Done</span>
+          
+        </td>
+        <td class="ms-notes"></td>
       </tr>
       
       <tr class="row-approval" data-status="upcoming in-progress key-meeting" data-ws="Website">
@@ -766,38 +814,6 @@
           
         </td>
         <td class="ms-notes">Alignment meeting—specific focus and questions sent prior to the meeting. Please review in advance and come ready to discuss.</td>
-      </tr>
-      
-      <tr class="row-approval" data-status="upcoming key-meeting" data-ws="Vision Video (Motion Graphic, 2-min)">
-        <td class="ms-date">Oct 7</td>
-        <td class="ms-name">Present Full Storyboards to Client<span class="ms-type-label">Client Meeting</span></td>
-        <td class="ms-ws">Vision Video (Motion Graphic, 2-min)</td>
-        <td class="ms-type">
-          <span style="font-weight:600;color:var(--approval-text)">Key Meeting</span>
-          
-        </td>
-        <td class="ms-notes">TOB presentation of full storyboards built from the confirmed creative direction. No prep needed—a calibration session follows to gather deliberate feedback and move toward action.</td>
-      </tr>
-      
-      <tr class="row-approval" data-status="upcoming key-meeting" data-ws="Vision Video (Motion Graphic, 2-min)">
-        <td class="ms-date">Oct 8</td>
-        <td class="ms-name">Calibration Session — Storyboard Feedback<span class="ms-type-label">Client Meeting</span></td>
-        <td class="ms-ws">Vision Video (Motion Graphic, 2-min)</td>
-        <td class="ms-type">
-          <span style="font-weight:600;color:var(--approval-text)">Key Meeting</span>
-          
-        </td>
-        <td class="ms-notes">Come prepared to discuss storyboard feedback—goal is align on feedback and work toward your sign off to begin building the video.</td>
-      </tr>
-      
-      <tr class="" data-status="upcoming" data-ws="Vision Video (Motion Graphic, 2-min)">
-        <td class="ms-date">Oct 9</td>
-        <td class="ms-name">Green Light to Move Forward<span class="ms-type-label">Decision</span></td>
-        <td class="ms-ws">Vision Video (Motion Graphic, 2-min)</td>
-        <td class="ms-type">
-          <span style="color:var(--muted)">Upcoming</span>
-        </td>
-        <td class="ms-notes"></td>
       </tr>
       
       <tr class="" data-status="upcoming" data-ws="Website">
@@ -958,17 +974,6 @@
         <td class="ms-notes"></td>
       </tr>
       
-      <tr class="row-approval" data-status="upcoming key-meeting" data-ws="Vision Video (Motion Graphic, 2-min)">
-        <td class="ms-date">–</td>
-        <td class="ms-name">Calibration Session — Script V2 & Mix Approval<span class="ms-type-label">Client Meeting</span></td>
-        <td class="ms-ws">Vision Video (Motion Graphic, 2-min)</td>
-        <td class="ms-type">
-          <span style="font-weight:600;color:var(--approval-text)">Key Meeting</span>
-          
-        </td>
-        <td class="ms-notes"></td>
-      </tr>
-      
       <tr class="" data-status="upcoming" data-ws="Vision Video (Motion Graphic, 2-min)">
         <td class="ms-date">–</td>
         <td class="ms-name">Client Final Approval<span class="ms-type-label">Decision</span></td>
@@ -987,9 +992,17 @@
 
   <footer class="doc-footer">
     <div class="footer-brand">Open Book</div>
-    <div class="footer-note">
-      teamopenbook.com · Minneapolis, MN<br>
-      For questions, contact your Open Book project lead.
+    <div class="footer-right">
+      
+      <button class="refresh-btn" id="refresh-btn" type="button" data-token="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">
+        <span id="refresh-icon">↻</span>
+        <span id="refresh-label">Refresh from Monday</span>
+      </button>
+      
+      <div class="footer-note">
+        teamopenbook.com · Minneapolis, MN<br>
+        For questions, contact your Open Book project lead.
+      </div>
     </div>
   </footer>
 
@@ -1245,6 +1258,62 @@
   readUrl();
   syncUi();
   applyFilters();
+})();
+
+/* ─── REFRESH BUTTON ───────────────────────── */
+(function initRefresh() {
+  var btn = document.getElementById('refresh-btn');
+  if (!btn) return;
+  var icon = document.getElementById('refresh-icon');
+  var label = document.getElementById('refresh-label');
+  var token = btn.dataset.token;
+  var API = 'https://api.github.com/repos/Open-Book-Communications/openbook-client-plans/actions/workflows/refresh-dashboards.yml/dispatches';
+
+  function reset() {
+    btn.disabled = false;
+    btn.classList.remove('success', 'error');
+    icon.classList.remove('spin');
+    icon.textContent = '↻';
+    label.textContent = 'Refresh from Monday';
+  }
+
+  btn.addEventListener('click', function() {
+    btn.disabled = true;
+    btn.classList.remove('success', 'error');
+    icon.classList.add('spin');
+    icon.textContent = '↻';
+    label.textContent = 'Refreshing…';
+
+    fetch(API, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/vnd.github+json',
+        'Authorization': 'Bearer ' + token,
+        'X-GitHub-Api-Version': '2022-11-28',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ref: 'main' })
+    }).then(function(r) {
+      icon.classList.remove('spin');
+      if (r.status === 204) {
+        btn.classList.add('success');
+        icon.textContent = '✓';
+        label.textContent = 'Refresh started — reload in ~1 min';
+        setTimeout(reset, 60000);
+      } else {
+        btn.classList.add('error');
+        icon.textContent = '!';
+        label.textContent = 'Refresh failed (' + r.status + ')';
+        setTimeout(reset, 5000);
+      }
+    }).catch(function() {
+      icon.classList.remove('spin');
+      btn.classList.add('error');
+      icon.textContent = '!';
+      label.textContent = 'Refresh failed — try again';
+      setTimeout(reset, 5000);
+    });
+  });
 })();
 </script>
 
