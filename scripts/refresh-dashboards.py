@@ -614,7 +614,6 @@ def render_client(client_cfg: dict, token: str, jinja_env: Environment) -> str |
         "milestones": milestones,
         "links": client_cfg.get("links", []),
         "generated_at": now,
-        "refresh_token": os.environ.get("REFRESH_TOKEN", ""),
     }
 
     template = jinja_env.get_template("index.html")

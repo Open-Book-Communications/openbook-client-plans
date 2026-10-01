@@ -35,7 +35,6 @@ jobs:
       - name: Refresh dashboards
         env:
           MONDAY_API_TOKEN: ${{ secrets.MONDAY_API_TOKEN }}
-          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
         run: python scripts/refresh-dashboards.py
 
       - name: Commit and push if changed
