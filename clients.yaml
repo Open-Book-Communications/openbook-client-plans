@@ -31,6 +31,13 @@ clients:
     close_date: "2026-12-16"
     project_type: linear
 
+  - slug: harvest-group
+    display_name: Harvest Group
+    monday_group_id: group_mm89krx
+    kickoff_date: "2026-10-19"
+    close_date: "2027-05-07"
+    project_type: linear
+
   - slug: beacon
     display_name: Beacon Interfaith
     monday_group_id: group_mm4magfz
