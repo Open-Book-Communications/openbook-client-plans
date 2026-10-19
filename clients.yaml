@@ -34,7 +34,7 @@ clients:
   - slug: harvest-group
     display_name: Harvest Group
     monday_group_id: group_mm89krx
-    kickoff_date: "2026-10-19"
+    kickoff_date: "2026-10-22"
     close_date: "2027-05-07"
     project_type: linear
 
