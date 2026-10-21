@@ -40,9 +40,9 @@ clients:
 
   - slug: beacon
     display_name: Beacon Interfaith
-    monday_group_id: group_mm4magfz
-    kickoff_date: "2026-09-18"
-    close_date: "2027-06-23"
+    monday_group_id: group_mm7xs0nj
+    kickoff_date: "2026-11-13"
+    close_date: "2027-06-09"
     project_type: linear
 
   - slug: christ-central
